@@ -1,0 +1,8 @@
+{
+  "name": "siwr-starter-pack",
+  "version": "1.0.0",
+  "description": "A starter package to help aspiring developers to get a foothold developing on the Ronin Network.",
+  "main": "index.js",
+  "author": "w0nd3r",
+  "license": "MIT"
+}
