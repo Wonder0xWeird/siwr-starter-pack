@@ -1,7 +1,6 @@
 import axios from "axios"
-import { ethers } from "ethers"
+import { ethers, providers } from "ethers"
 import WalletConnectProvider from "@walletconnect/web3-provider"
-import siwrConfig from "../../siwr.config"
 
 const transferAndBalanceABI = [
   {
@@ -57,17 +56,17 @@ declare global {
   interface Window {
     ethereum: any
     ronin: {
-      provider: ethers.BrowserProvider
+      provider: ethers.providers.ExternalProvider
       roninEvent: EventListener
     }
   }
-  // interface ExternalProvider {
-  //   selectedAddress: any
-  // }
+  interface ExternalProvider {
+    selectedAddress: any
+  }
 }
 
 export interface IRoninConfig {
-  provider: ethers.BrowserProvider
+  provider: ethers.providers.Web3Provider
   activeAddress: string
   tokenContractSigner: ethers.Contract
   balance: number
@@ -75,9 +74,15 @@ export interface IRoninConfig {
 }
 
 export async function getConnectionDetails() {
-  const nonce = await axios
+  const { nonce, message } = await axios
     .post("/api/auth/generateNonce")
-    .then(async (result) => result.data.data)
+    .then(async (result) => {
+      const nonce = result.data.data
+      console.log("generated nonce result:", nonce)
+      const message =
+        "Defenders of Lunacian Lands Ronin Secure Sign On: " + nonce
+      return { nonce, message }
+    })
 
   const isMobile = navigator.userAgent.match(
     /(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i
@@ -89,15 +94,15 @@ export async function getConnectionDetails() {
     if (window.ronin === undefined) {
       return -1
     }
-    //@ts-expect-error
-    web3Provider = new ethers.BrowserProvider(window.ronin.provider)
+    web3Provider = new ethers.providers.Web3Provider(window.ronin.provider)
   } else {
+    //check for the case of touch screen devices with
     web3Provider = await connectMobileProvider()
   }
 
   if (await isUnlocked(web3Provider)) {
-    const { signature, message } = await getSiwrSignature(web3Provider, nonce)
-    console.log("message:", message)
+    signature = await web3Provider.getSigner().signMessage(message)
+
     connectRequestBody = {
       message: message,
       nonce: nonce,
@@ -110,58 +115,6 @@ export async function getConnectionDetails() {
   }
 
   return connectRequestBody
-}
-
-async function getSiwrSignature(web3Provider, nonce) {
-  const userAddress = await (await web3Provider.getSigner()).getAddress()
-  let signature
-  let message = JSON.stringify({
-    domain: window.location.host,
-    address: userAddress,
-    statement: `${userAddress} is signing in to ${window.location.host} via SIWR.`,
-    uri: window.location.origin,
-    version: "1",
-    chainId: siwrConfig.chainId,
-    nonce: nonce,
-    issuedAt: new Date(Date.now()).toISOString(),
-  })
-
-  if (siwrConfig.allowListed) {
-    console.log("Ronin Wallet Connect")
-    signature = await (await web3Provider.getSigner())
-      .signMessage(message)
-      .catch(() => console.log("User rejected request"))
-  } else {
-    console.log("Ronin SSO Connect")
-    const SSO_URL = "https://ronin.axiedao.org/sso"
-    const url =
-      SSO_URL +
-      "?message=" +
-      message +
-      "&ref=" +
-      encodeURIComponent(window.parent.location.href) +
-      "&autoclose=true"
-    let RoninSignatureWindow = window.open("", "SSO")
-    RoninSignatureWindow.location.href = url
-    await new Promise((resolve, reject) => {
-      window.addEventListener("message", async function receiveSig(event) {
-        if (
-          typeof event.data === "object" &&
-          "key" in event.data &&
-          event.data.key === "signature" &&
-          event.origin === "https://ronin.axiedao.org"
-        ) {
-          RoninSignatureWindow?.close()
-          window.removeEventListener("message", receiveSig, false)
-          signature = event.data.message.signature
-          message = event.data.message.message
-          resolve(signature)
-        }
-      })
-    })
-  }
-
-  return { signature, message }
 }
 
 export const configureRonin = async (
@@ -178,14 +131,13 @@ export const configureRonin = async (
       console.log("Ronin wallet is not installed.")
       return null
     }
-    //@ts-expect-error
-    web3Provider = new ethers.BrowserProvider(window.ronin.provider)
+    web3Provider = new ethers.providers.Web3Provider(window.ronin.provider)
   } else {
     web3Provider = await connectMobileProvider()
   }
 
   if (await isUnlocked(web3Provider)) {
-    const jsonRpcSigner = await web3Provider.getSigner()
+    const jsonRpcSigner = web3Provider.getSigner()
     const connectedAddress = await jsonRpcSigner.getAddress()
 
     const tokenAddress = getTokenAddress(tokenToUse)
@@ -216,7 +168,7 @@ export const configureRonin = async (
   }
 }
 
-async function isUnlocked(provider: ethers.BrowserProvider) {
+async function isUnlocked(provider: ethers.providers.Web3Provider) {
   let isUnlocked: boolean
   try {
     const accounts = await provider.listAccounts()
@@ -229,31 +181,19 @@ async function isUnlocked(provider: ethers.BrowserProvider) {
 }
 
 function getTokenAddress(tokenToUse) {
-  if (siwrConfig.connectToSaigon) {
-    if (tokenToUse === "SLP") {
-      return "0x82f5483623d636bc3deba8ae67e1751b6cf2bad2"
-    } else if (tokenToUse === "USDC") {
-      return "0x067fbff8990c58ab90bae3c97241c5d736053f77"
-    } else if (tokenToUse === "AXS") {
-      return "0x3c4e17b9056272ce1b49f6900d8cfd6171a1869d"
-    } else if (tokenToUse === "WETH") {
-      return "0x29c6f8349a028e1bdfc68bfa08bdee7bc5d47e16"
-    }
-  } else {
-    if (tokenToUse === "SLP") {
-      return "0xa8754b9Fa15fc18BB59458815510E40a12cD2014"
-    } else if (tokenToUse === "USDC") {
-      return "0x0b7007c13325c48911f73a2dad5fa5dcbf808adc"
-    } else if (tokenToUse === "AXS") {
-      return "0x97a9107c1793bc407d6f527b77e7fff4d812bece"
-    } else if (tokenToUse === "WETH") {
-      return "0xc99a6a985ed2cac1ef41640596c5a5f9f4e19ef5"
-    }
+  if (tokenToUse === "SLP") {
+    return "0xa8754b9Fa15fc18BB59458815510E40a12cD2014"
+  } else if (tokenToUse === "USDC") {
+    return "0x0b7007c13325c48911f73a2dad5fa5dcbf808adc"
+  } else if (tokenToUse === "AXS") {
+    return "0x97a9107c1793bc407d6f527b77e7fff4d812bece"
   }
 }
 
 async function getBalance(address, tokenAddress) {
-  const provider = new ethers.JsonRpcProvider(siwrConfig.roninJsonRpcUrl)
+  const provider = new ethers.providers.JsonRpcProvider(
+    "https://api.roninchain.com/rpc"
+  )
   const contract = new ethers.Contract(
     tokenAddress,
     transferAndBalanceABI,
@@ -261,7 +201,7 @@ async function getBalance(address, tokenAddress) {
   )
 
   let balance = await contract.balanceOf(address)
-  balance = ethers.formatUnits(balance, 0)
+  balance = ethers.utils.formatUnits(balance, 0)
 
   return balance
 }
@@ -269,7 +209,7 @@ async function getBalance(address, tokenAddress) {
 export async function connectMobileProvider() {
   const provider = new WalletConnectProvider({
     bridge: "https://bridge.walletconnect.org",
-    rpc: { [siwrConfig.chainId]: siwrConfig.roninJsonRpcUrl },
+    rpc: { "2020": "https://api.roninchain.com/rpc" },
     qrcode: false,
   })
 
@@ -283,7 +223,7 @@ export async function connectMobileProvider() {
   })
 
   await provider.enable()
-  const web3Provider = new ethers.BrowserProvider(provider)
+  const web3Provider = new providers.Web3Provider(provider)
   return web3Provider
 }
 

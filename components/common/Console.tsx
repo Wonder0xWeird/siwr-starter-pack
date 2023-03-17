@@ -1,10 +1,10 @@
 import { forwardRef, Box, BoxProps, StackProps } from "@chakra-ui/react"
 
-interface IConsole extends BoxProps {
+interface ConsoleProps extends BoxProps {
   header?: boolean
 }
 
-const Console = forwardRef<IConsole, "div">((props, ref) => (
+const Console = forwardRef<ConsoleProps, "div">((props, ref) => (
   <Box
     border="1.5px solid #029eff"
     borderRadius={"10px"}

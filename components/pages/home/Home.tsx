@@ -117,18 +117,23 @@ export default function Home() {
               and Git repository integration.
             </ListItem>
             <ListItem ml="30px">
-              Frontend design principles and theming with{" "}
-              <a
-                href="https://chakra-ui.com/"
-                style={{ textDecoration: "underline" }}
-              >
-                Chakra UI
-              </a>{" "}
-              component library integration.
+              Frontend design principles and theming with component library
+              integration.
             </ListItem>
             <ListItem ml="30px">TypeScript ready!</ListItem>
           </UnorderedList>
-          <Text></Text>
+          <Heading size="md">How do I get started?</Heading>
+          <Text>
+            Head to the{" "}
+            <a
+              href="https://github.com/Wonder0xWeird/siwr-starter-pack"
+              style={{ textDecoration: "underline" }}
+            >
+              SIWR Starter Pack
+            </a>{" "}
+            repo, fork/clone it to your local dev environment, and start
+            hacking!
+          </Text>
           <Text></Text>
         </VStack>
       </VStack>

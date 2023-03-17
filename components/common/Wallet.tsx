@@ -212,7 +212,7 @@ export default function DollWallet(props) {
         productInfo.priceInToken *
         productInfo.tokenContractUnit
       ).toString()
-      const amountBigInt = ethers.parseUnits(totalCost, 0)
+      const amountBigInt = ethers.utils.parseUnits(totalCost, 0)
       const txData = {
         gasLimit: 100000,
       }
