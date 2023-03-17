@@ -4,8 +4,8 @@ import { signIn } from "next-auth/react"
 
 import windowWidth from "../../../lib/frontend/hooks/window"
 import { getConnectionDetails } from "../../../lib/frontend/wallet"
-import DesktopNav from "./DesktopNav"
-import MobileNav from "./MobileNav"
+import DesktopNav from "./sub/DesktopNav"
+import MobileNav from "./sub/MobileNav"
 
 export default function Navbar() {
   const router = useRouter()
@@ -32,7 +32,7 @@ export default function Navbar() {
     })
   }
 
-  return windowWidth(1279) ? (
+  return windowWidth(599) ? (
     <DesktopNav currentPage={currentPage} connectToRonin={connectToRonin} />
   ) : (
     <MobileNav currentPage={currentPage} connectToRonin={connectToRonin} />

@@ -1,9 +1,9 @@
 import React from "react"
-import { Box, IconButton } from "@chakra-ui/react"
-import { useRouter } from "next/router"
+import { Box } from "@chakra-ui/react"
+import Console from "../../../common/Console"
 
+import { useRouter } from "next/router"
 import { useSession } from "next-auth/react"
-import Console from "../../common/Console"
 
 export default function Banner() {
   return (
@@ -21,7 +21,7 @@ export default function Banner() {
       borderRadius={"32px"}
       mb="20px"
     >
-      <Box w="100%">Notify your users about recent changes here...</Box>
+      <Box w="100%">Notify your users about recent updates here!</Box>
     </Console>
   )
 }

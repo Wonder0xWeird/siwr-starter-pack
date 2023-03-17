@@ -11,52 +11,44 @@ export default function Footer() {
       w="98%"
       ml="1%"
       bottom="0"
-      borderRadius={"20px 20px 0 0"}
+      borderRadius={"30px 30px 0 0"}
       zIndex={99999}
     >
       <Console
-        p="0px 10px"
+        p="2px 10px"
         maxW="1400px"
         m="auto"
         mb="5px"
-        borderRadius={"20px"}
+        borderRadius={"30px"}
       >
         <Flex alignItems="center" justifyContent="space-between">
-          <Button
-            as="a"
-            href={siwrConfig.origin}
-            variant="navLink"
-            p="0px"
-            size="sm"
-          >
-            <Image src="/images/ronin-logo.png" width="25px" height="25px" />
+          <Button as="a" href={"/"} variant="nav">
+            <Image
+              src="/images/icons/ronin-logo.svg"
+              width="25px"
+              height="25px"
+            />
           </Button>
-          <Button
-            as="a"
-            href="https://twitter.com"
-            variant="navLink"
-            p="0px"
-            size="sm"
-          >
-            <Image src={"/images/twitter.svg"} width="20px" height="20px" />
+          <Button as="a" href="https://twitter.com/Ronin_Network" variant="nav">
+            <Image
+              src={"/images/icons/twitter.svg"}
+              width="20px"
+              height="20px"
+            />
           </Button>
-          <Button
-            as="a"
-            href="https://discord.gg"
-            variant="navLink"
-            p="0px"
-            size="sm"
-          >
-            <Image src={"/images/discord.svg"} width="25px" height="25px" />
+          <Button as="a" href="https://discord.gg/roninnetwork" variant="nav">
+            <Image
+              src={"/images/icons/discord.svg"}
+              width="25px"
+              height="25px"
+            />
           </Button>
-          <Button
-            as="a"
-            href="https://tiyo.gitbook.io"
-            variant="navLink"
-            p="0px"
-            size="sm"
-          >
-            <Image src={"/images/gitbook.svg"} width="25px" height="25px" />
+          <Button as="a" href="https://docs.roninchain.com/" variant="nav">
+            <Image
+              src={"/images/icons/gitbook.svg"}
+              width="25px"
+              height="25px"
+            />
           </Button>
         </Flex>
       </Console>

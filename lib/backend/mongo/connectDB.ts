@@ -4,7 +4,7 @@ let MONGODB_URI
 const MONGODB_DB = process.env.DB_NAME
 if (process.env.NODE_ENV === "development") {
   MONGODB_URI = process.env.MONGODB_DEV_URI
-  console.log("USING DOLL DEV DATABASE")
+  console.log("USING DEV DATABASE")
 } else {
   MONGODB_URI = process.env.MONGODB_URI
 }

@@ -1,10 +1,4 @@
-import {
-  Button,
-  Input,
-  InputGroup,
-  InputRightElement,
-  IconButton,
-} from "@chakra-ui/react"
+import { Button, Input, InputGroup, InputRightElement } from "@chakra-ui/react"
 import { useState } from "react"
 
 export default function PasswordInput({ ...props }) {
@@ -14,8 +8,8 @@ export default function PasswordInput({ ...props }) {
   return (
     <InputGroup size="md">
       <Input type={show ? "text" : "password"} {...props} />
-      <InputRightElement width="4.5rem">
-        <Button h="1.75rem" size="sm" onClick={handleClick}>
+      <InputRightElement width="4.5rem" mr="5px">
+        <Button variant="primary" h="1.75rem" size="sm" onClick={handleClick}>
           {show ? "Hide" : "Show"}
         </Button>
       </InputRightElement>

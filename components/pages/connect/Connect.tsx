@@ -14,9 +14,9 @@ import {
 import { signIn } from "next-auth/react"
 import { useBreakpointValue } from "@chakra-ui/react"
 
-import Splash from "./sub/Splash"
 import PasswordInput from "../../common/PasswordInput"
 import { getConnectionDetails } from "../../../lib/frontend/wallet"
+import Console from "../../common/Console"
 
 interface ICredentials {
   username: string
@@ -51,7 +51,7 @@ export default function Connect() {
     await signIn("ronin", connectRequestBody).then((result) => {
       console.log("Sign In Result:", result)
       if (result.status === 200) {
-        router.push("/game/register")
+        router.push("/account")
         setIsLoggingIn(false)
       } else {
         console.log(result.error)
@@ -75,7 +75,7 @@ export default function Connect() {
       await signIn("login", loginRequestBody).then((result) => {
         console.log("Sign In Result:", result)
         if (result.status === 200) {
-          router.push("/game/register")
+          router.push("/account")
         } else {
           console.log(result.error)
           alert("Invalid credentials")
@@ -93,78 +93,70 @@ export default function Connect() {
   }
 
   return (
-    <VStack>
-      <Splash />
-
+    <Console w="fit-content" m="auto">
       <VStack
-        w="full"
-        h="full"
-        p={10}
-        spacing={10}
+        p={"10px"}
+        spacing={5}
         alignItems="flex-start"
         className={isLoggingIn && "borderChange"}
       >
-        {isLoggingIn ? (
-          <Heading>Signing In!</Heading>
-        ) : (
-          <Heading size="2xl">Login</Heading>
-        )}
-        <Text>
-          Once connected to your Ronin Wallet, you will be directed to create a
-          DoLL username & password which you may use to login here and in the
-          DoLL game client.
-        </Text>
-      </VStack>
-      <SimpleGrid columns={2} columnGap={3} rowGap={6} w="full">
-        <GridItem colSpan={2}>
-          <FormControl>
-            <Button size="lg" w="full" onMouseUp={siwr} disabled={isLoggingIn}>
-              Connect Ronin Wallet
-            </Button>
-          </FormControl>
-        </GridItem>
+        <Heading>{isLoggingIn ? "Signing In!" : "Login"}</Heading>
 
-        <GridItem colSpan={2} marginTop={10}>
-          <Text>
-            Return users may connect via Ronin or their username and password.
-          </Text>
-        </GridItem>
-        <GridItem colSpan={colSpan}>
-          <FormControl>
-            <FormLabel>Username</FormLabel>
-            <Input
-              name="username"
-              value={loginInput.username}
-              onChange={handleInput}
-              type="text"
-              placeholder="Username..."
-            />
-          </FormControl>
-        </GridItem>
-        <GridItem colSpan={colSpan}>
-          <FormControl>
-            <FormLabel>Password</FormLabel>
-            <PasswordInput
-              name="password"
-              value={loginInput.password}
-              onChange={handleInput}
-              placeholder="Password..."
-            />
-          </FormControl>
-        </GridItem>
-        <GridItem colSpan={2}>
-          <FormControl>
-            <Button
-              size="lg"
-              w="full"
-              onMouseUp={login}
-              disabled={isLoggingIn ? true : false}
-            >
-              Login
-            </Button>
-          </FormControl>
-        </GridItem>
-      </SimpleGrid>
-    </VStack>
+        <SimpleGrid columns={2} columnGap={3} rowGap={6} w="full">
+          <GridItem colSpan={2} textAlign="center">
+            <FormControl>
+              <Button
+                variant={"primary"}
+                w="full"
+                onMouseUp={siwr}
+                disabled={isLoggingIn}
+              >
+                Connect Ronin Wallet
+              </Button>
+            </FormControl>
+            <Text fontSize={"12px"} style={{ opacity: 0.5 }}>
+              After connecting, new users will be directed to create a username
+              & password.
+            </Text>
+          </GridItem>
+
+          <GridItem colSpan={colSpan}>
+            <FormControl>
+              <FormLabel>Username</FormLabel>
+              <Input
+                name="username"
+                value={loginInput.username}
+                onChange={handleInput}
+                type="text"
+                placeholder="Username..."
+              />
+            </FormControl>
+          </GridItem>
+          <GridItem colSpan={colSpan}>
+            <FormControl>
+              <FormLabel>Password</FormLabel>
+              <PasswordInput
+                name="password"
+                value={loginInput.password}
+                onChange={handleInput}
+                placeholder="Password..."
+              />
+            </FormControl>
+          </GridItem>
+          <GridItem colSpan={2}>
+            <FormControl>
+              <Button
+                variant={"primary"}
+                w="full"
+                onMouseUp={login}
+                disabled={isLoggingIn ? true : false}
+              >
+                Login
+              </Button>
+            </FormControl>
+          </GridItem>
+        </SimpleGrid>
+      </VStack>
+    </Console>
   )
 }

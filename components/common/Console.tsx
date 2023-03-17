@@ -1,4 +1,4 @@
-import { forwardRef, Box, BoxProps } from "@chakra-ui/react"
+import { forwardRef, Box, BoxProps, StackProps } from "@chakra-ui/react"
 
 interface IConsole extends BoxProps {
   header?: boolean
@@ -16,6 +16,7 @@ const Console = forwardRef<IConsole, "div">((props, ref) => (
     }
     p="10px 15px"
     ref={ref}
+    color="gray.100"
     {...props}
   >
     {props.children}

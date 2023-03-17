@@ -1,4 +1,8 @@
 import { extendTheme, theme as base } from "@chakra-ui/react"
+import Console from "../components/common/Console"
+
+const DESIGN_MAX_WIDTH = 1400
+export { DESIGN_MAX_WIDTH }
 
 const theme = extendTheme({
   config: {
@@ -46,7 +50,7 @@ const theme = extendTheme({
   components: {
     Button: {
       baseStyle: {
-        cursor: "default",
+        cursor: "pointer",
       },
       variants: {
         primary: {
@@ -54,12 +58,8 @@ const theme = extendTheme({
           borderRadius: "50px",
           border: "2px solid #4daffe",
           backgroundColor: "brand.400",
-          // transform: "translate(0, -2px)",
           boxShadow: "-1px 2px 12px #141921",
           transition: "all 0.5s",
-          // _hover: {
-          //   backgroundColor: "brand.300",
-          // },
           _active: {
             backgroundColor: "brand.300",
             transform: "translate(0, 3px)",
@@ -67,14 +67,15 @@ const theme = extendTheme({
             transition: "all 0.2s",
           },
         },
-        navLinkCurrent: {
+        navSelected: {
+          bg: "rgba(2, 158, 255, 0.1)",
           paddingBottom: "2px",
           borderTop: "1px solid #1A202C",
           borderBottom: "2px solid #4daffe",
           borderRadius: "25px",
           margin: "0 2px",
         },
-        navLink: {
+        nav: {
           borderRadius: "25px",
           transition: "all 0.2s",
           margin: "0 2px",
@@ -89,6 +90,12 @@ const theme = extendTheme({
             transition: "all 0.2s",
           },
         },
+      },
+    },
+    Tooltip: {
+      baseStyle: {
+        background: "none",
+        boxShadow: "none",
       },
     },
   },

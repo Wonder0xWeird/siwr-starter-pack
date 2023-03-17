@@ -16,7 +16,11 @@ export default function App({
         <Head>
           {/* Primary Meta Tags */}
           <title>SIWR Starter Pack</title>
-          <link rel="icon" type="image/x-icon" href="/images/ronin-logo.svg" />
+          <link
+            rel="icon"
+            type="image/x-icon"
+            href="/images/icons/ronin-logo.svg"
+          />
           <meta name="title" content="Sign In With Ronin" />
           <meta name="description" content="Build on the Ronin Network!" />
 
