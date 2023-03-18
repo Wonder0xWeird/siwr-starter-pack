@@ -69,7 +69,7 @@ function verifyNonceAndAddress(credentials) {
     addressCheck = JSON.parse(JSON.parse(credentials.message).message).address
   }
 
-  const signerAddress = ethers.verifyMessage(
+  const signerAddress = ethers.utils.verifyMessage(
     credentials.message,
     credentials.signature
   )

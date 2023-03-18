@@ -41,14 +41,23 @@ export default function DesktopNav({ currentPage, connectToRonin }) {
               right="-15px"
               bottom="-20px"
             />
-            <Flex w="100%">
-              <Button
-                variant={currentPage === "game" ? `navSelected` : `nav`}
-                onClick={() => router.push("/game")}
-              >
-                🎮 Game
-              </Button>
-            </Flex>
+            {status === "authenticated" && (
+              <Flex w="100%">
+                <Button
+                  variant={currentPage === "game" ? `navSelected` : `nav`}
+                  onClick={() => router.push("/game")}
+                >
+                  🎮 Game
+                </Button>
+
+                {/* <Button
+                  variant={currentPage === "pageName" ? `navSelected` : `nav`}
+                  onClick={() => router.push("/pageName")}
+                >
+                  ✨ Nav Button
+                </Button> */}
+              </Flex>
+            )}
 
             {status === "authenticated" ? (
               <Flex alignItems="center">

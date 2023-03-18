@@ -55,66 +55,69 @@ export default function MobileNav({ currentPage, connectToRonin }) {
 
           <Collapse in={showNav} unmountOnExit>
             <Flex justifyContent={"space-between"} p="5px 5px 10px 0">
-              <VStack spacing={4} alignItems="flex-start">
-                <Button
-                  variant={currentPage === "game" ? `navSelected` : `nav`}
-                  onClick={() => router.push("/game")}
-                >
-                  🎮 Game
-                </Button>
-
-                {/* <Button
-                  variant={currentPage === "pageName" ? `navSelected` : `nav`}
-                  onClick={() => router.push("/pageName")}
-                >
-                  ✨ Nav Button
-                </Button> */}
-              </VStack>
-
               {status === "authenticated" ? (
-                <VStack spacing={4}>
-                  <Button
-                    variant={currentPage === "account" ? `navSelected` : `nav`}
-                    onClick={() => router.push("/account")}
-                  >
-                    💖 Account
-                  </Button>
+                <>
+                  <VStack spacing={4} alignItems="flex-start">
+                    <Button
+                      variant={currentPage === "game" ? `navSelected` : `nav`}
+                      onClick={() => router.push("/game")}
+                    >
+                      🎮 Game
+                    </Button>
 
-                  <Button variant="navSelected">
-                    <Image
-                      src={"/images/icons/ronin-logo.svg"}
-                      w="25px"
-                      mr="2px"
-                    />
-                    {`${sliceRoninAddress(session.user.address, 3)}`}
-                  </Button>
-
-                  <Button
-                    variant="primary"
-                    alignSelf="flex-end"
-                    // w="75%"
-                    // m="auto"
-                    onClick={async () => {
-                      const isMobile =
-                        navigator.maxTouchPoints ||
-                        "ontouchstart" in document.documentElement
-                      if (isMobile) {
-                        const provider = new WalletConnectProvider({
-                          bridge: "https://bridge.walletconnect.org",
-                          rpc: { "2020": "https://api.roninchain.com/rpc" },
-                          qrcode: false,
-                        })
-                        await provider.disconnect()
+                    {/* <Button
+                variant={currentPage === "pageName" ? `navSelected` : `nav`}
+                onClick={() => router.push("/pageName")}
+              >
+                ✨ Nav Button
+              </Button> */}
+                  </VStack>
+                  <VStack spacing={4}>
+                    <Button
+                      variant={
+                        currentPage === "account" ? `navSelected` : `nav`
                       }
-                      await signOut()
-                      router.push("/")
-                    }}
-                  >
-                    SIGN OUT
-                  </Button>
-                </VStack>
+                      onClick={() => router.push("/account")}
+                    >
+                      💖 Account
+                    </Button>
+
+                    <Button variant="navSelected">
+                      <Image
+                        src={"/images/icons/ronin-logo.svg"}
+                        w="25px"
+                        mr="2px"
+                      />
+                      {`${sliceRoninAddress(session.user.address, 3)}`}
+                    </Button>
+
+                    <Button
+                      variant="primary"
+                      alignSelf="flex-end"
+                      // w="75%"
+                      // m="auto"
+                      onClick={async () => {
+                        const isMobile =
+                          navigator.maxTouchPoints ||
+                          "ontouchstart" in document.documentElement
+                        if (isMobile) {
+                          const provider = new WalletConnectProvider({
+                            bridge: "https://bridge.walletconnect.org",
+                            rpc: { "2020": "https://api.roninchain.com/rpc" },
+                            qrcode: false,
+                          })
+                          await provider.disconnect()
+                        }
+                        await signOut()
+                        router.push("/")
+                      }}
+                    >
+                      SIGN OUT
+                    </Button>
+                  </VStack>
+                </>
               ) : (
-                <Flex>
+                <Flex justifyContent="flex-end" w="full">
                   <Button
                     variant={currentPage === "connect" ? `navSelected` : `nav`}
                     onClick={() => router.push("/connect")}

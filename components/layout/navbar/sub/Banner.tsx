@@ -4,22 +4,21 @@ import Console from "../../../common/Console"
 
 import { useRouter } from "next/router"
 import { useSession } from "next-auth/react"
+import { DESIGN_MAX_WIDTH } from "../../../../styles/theme"
 
 export default function Banner() {
   return (
     <Console
-      mt="3px"
       bg="linear-gradient(90deg, #4daffe 0%, #34aeff 47%, #008efe 100%)"
       w="96%"
-      ml="2%"
+      maxW={DESIGN_MAX_WIDTH * 0.96}
+      m="3px auto 20px"
       p="5px"
       display="flex"
       alignItems="center"
       justifyContent="center"
       textAlign="center"
-      id="banner"
       borderRadius={"32px"}
-      mb="20px"
     >
       <Box w="100%">Notify your users about recent updates here!</Box>
     </Console>

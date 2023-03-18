@@ -98,6 +98,16 @@ const theme = extendTheme({
         boxShadow: "none",
       },
     },
+    AccordionButton: {
+      baseStyle: {
+        textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
+      },
+    },
+    AccordionPanel: {
+      baseStyle: {
+        textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
+      },
+    },
   },
 })
 
