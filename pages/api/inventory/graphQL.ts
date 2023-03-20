@@ -24,6 +24,7 @@ export default async function handler(
         return result
       })
       .catch((err) => {
+        console.log("Error fetching user Axies:", err)
         return result
       })
 

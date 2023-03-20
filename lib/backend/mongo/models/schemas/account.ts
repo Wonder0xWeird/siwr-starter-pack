@@ -7,7 +7,7 @@ interface IAccount {
   _id: mongoose.Types.ObjectId
   user: IUser
   password: string
-  registeredAxies: number[]
+  registeredAxies: string[]
   wallet: IWallet
   createdAt: number
   updatedAt: number
@@ -21,7 +21,7 @@ type IAccountModelType = mongoose.Model<IAccount, {}, IAccountDocumentProps>
 const accountSchema = new mongoose.Schema<IAccount, IAccountModelType>({
   user: userSchema,
   password: String,
-  registeredAxies: [Number],
+  registeredAxies: [String],
   wallet: {
     type: walletSchema,
     default: {

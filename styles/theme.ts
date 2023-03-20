@@ -1,8 +1,6 @@
 import { extendTheme, theme as base } from "@chakra-ui/react"
-import Console from "../components/common/Console"
 
-const DESIGN_MAX_WIDTH = 1400
-export { DESIGN_MAX_WIDTH }
+export const DESIGN_MAX_WIDTH = 1400
 
 const theme = extendTheme({
   config: {

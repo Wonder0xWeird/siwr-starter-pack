@@ -2,109 +2,80 @@ import React from "react"
 import axios from "axios"
 import {
   Box,
-  Text,
   Button,
+  Divider,
   Flex,
-  VStack,
-  SimpleGrid,
   GridItem,
   Heading,
-  Image,
+  Input,
+  SimpleGrid,
+  Tooltip,
   useColorModeValue,
+  IconButton,
 } from "@chakra-ui/react"
 
-import Team from "./sub/Team"
-import AxieCardsViewer from "./sub/AxieCardsViewer"
-
-import {
-  getAxieBriefList,
-  getAxieDetail,
-} from "../../../lib/backend/api/utils/graphQueries"
-import { useRouter } from "next/router"
-import { getAxieGameStats } from "../../../lib/utils/axieFeatures"
+import AxieCard from "./sub/AxieCard"
+import Loading from "../../common/Loading"
+import Console from "../../common/Console"
+import { getAxieBriefList, IAxie } from "../../../lib/frontend/graphQueries"
+import { DESIGN_MAX_WIDTH } from "../../../styles/theme"
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"
+import AxieTeam from "./sub/AxieTeam"
+import { IRegisteredAxie } from "../../../lib/backend/mongo/models/schemas/registeredAxies"
 
 export default function Game(props) {
-  const [axieList, setAxieList] = React.useState<any[] | null>(null)
+  const [axieList, setAxieList] = React.useState<IAxie[]>([])
+  const [loading, setLoading] = React.useState<boolean>(true)
 
-  const [registeringAxies, setRegisteringAxies] = React.useState<any[]>([])
-  const [registeredAxies, setRegisteredAxies] = React.useState<any[]>([])
+  const [pages, setPages] = React.useState<number[]>([])
+  const [perPage, setPerPage] = React.useState<number>(10)
+  const [currentPage, setCurrentPage] = React.useState<number>(1)
+  const [pageInput, setPageInput] = React.useState<number>(1)
+
+  const [registeringAxies, setRegisteringAxies] = React.useState<
+    IAxie[] | IRegisteredAxie[]
+  >([])
+  const [registeredAxies, setRegisteredAxies] = React.useState<
+    IRegisteredAxie[]
+  >([])
   const [isRegistering, setIsRegistering] = React.useState<boolean>(false)
-
-  const router = useRouter()
+  const [isRegistered, setIsRegistered] = React.useState<boolean>(false)
 
   React.useEffect(() => {
     getAxies()
   }, [])
 
   async function getAxies() {
-    let finalizedAxies = []
-    console.log("props.user:", props.user)
-    const receivedAxies = await axios
+    const registeredAxies: IRegisteredAxie[] = await axios
       .get("/api/inventory/registeredAxies")
-      .then((response) => response.data.data.registeredAxies)
+      .then((response) => response.data.data)
       .catch((err) => {
-        if (err.response) {
-          console.log("Error getting axies:", err.response.data)
-          if (
-            err.response.data.message ===
-            "You must connect a Ronin address in order to register personal axies."
-          ) {
-            alert(
-              "You must connect a Ronin address in order to register personal axies."
-            )
-          }
-        }
+        console.log("Error getting axies:", err?.response?.data?.message)
+        return []
       })
-    console.log("receivedAxies:", receivedAxies)
-    if (receivedAxies) {
-      for (let i = 0; i < receivedAxies.length; i++) {
-        const id = receivedAxies[i].axieId
-        const axieDetails = await getAxieDetail(id, "").catch((err) => {
-          console.log("Error getting axie detail:", err)
-        })
-        // console.log("axieDetails:", axieDetails)
+    console.log("registeredAxies:", registeredAxies)
+    console.log("registeredAxies.length === 3:", registeredAxies.length === 3)
+    setRegisteredAxies(registeredAxies)
+    setIsRegistered(registeredAxies.length === 3)
 
-        const stats = getAxieGameStats(axieDetails.class, axieDetails.bodyShape)
-        axieDetails.stats = stats
-        for (let j = 0; j < axieDetails.parts.length; j++) {
-          axieDetails.parts[j].level =
-            receivedAxies[i].parts[
-              axieDetails.parts[j].type.toLowerCase()
-            ].skillLevel
-        }
-        finalizedAxies.push(axieDetails)
-      }
-      console.log("finalizedAxies:", finalizedAxies)
-      setRegisteredAxies(finalizedAxies)
-    }
-
-    const foundAxieList: any[] = (await getAxieBriefList(
-      props.user.address
-    )) as any[]
-
-    console.log("foundAxieList:", foundAxieList)
-
-    //loop through foundAxieList
-    for (const axie in foundAxieList) {
-      const stats = getAxieGameStats(
-        foundAxieList[axie].class,
-        foundAxieList[axie].bodyShape
-      )
-      foundAxieList[axie].stats = stats
-    }
-
+    const foundAxieList: IAxie[] = await getAxieBriefList(props.user.address)
     setAxieList(foundAxieList)
+
+    const numPages = Math.ceil(foundAxieList.length / perPage) ?? 0
+    setPages(Array.from(Array(numPages).keys()))
+
+    setLoading(false)
   }
 
-  const isFullTeam = registeringAxies.length === 3
-
-  async function completeRegistration() {
+  async function register() {
     setIsRegistering(true)
     await axios
-      .post("/api/auth/register-axies", registeringAxies)
+      .post("/api/inventory/register", registeringAxies)
       .then(async (result) => {
-        setRegisteredAxies((prevState) => [...prevState, ...registeringAxies])
+        console.log("result.data.data:", result.data.data)
+        setRegisteredAxies(result.data.data)
         setRegisteringAxies([])
+        setIsRegistered(true)
         setIsRegistering(false)
       })
       .catch((err) => {
@@ -119,11 +90,10 @@ export default function Game(props) {
   async function unregister() {
     setIsRegistering(true)
     await axios
-      .post("/api/auth/unregister-axies")
+      .post("/api/inventory/unregister")
       .then(async (result) => {
-        // useStorage().setItem("registered_axies", "")
-
         if (result.data.statusCode === 200) {
+          setIsRegistered(false)
           setRegisteredAxies([])
           setRegisteringAxies(registeredAxies)
         }
@@ -132,244 +102,134 @@ export default function Game(props) {
       .catch((err) => {
         if (err.response) {
           console.log("Error getting axies:", err.response.data)
-          if (
-            err.response.data.message ===
-            "You must connect a Ronin address in order to register personal axies."
-          ) {
-            alert(
-              "You must connect a Ronin address in order to register personal axies."
-            )
-          }
         }
         setIsRegistering(false)
       })
   }
 
-  //Define a variable for conditionally rendering the user's axies based on completion of data fetching
-  let isReady = registeredAxies ? registeredAxies.length === 3 : false
+  function updatePage(e) {
+    e.preventDefault()
+    if (pageInput < 1) {
+      setPageInput(1)
+      setCurrentPage(1)
+    } else if (pageInput > pages.length) {
+      setPageInput(pages.length)
+      setCurrentPage(pages.length)
+    } else {
+      setCurrentPage(pageInput)
+    }
+  }
+  function handlePageInput(e) {
+    setPageInput(e.target.value)
+  }
 
   return (
-    <VStack position="relative" w="96%" m="0 auto 20px">
-      {registeredAxies.length !== 3 ? (
-        <VStack maxW={"900px"} textAlign="center">
-          <Heading
-            textAlign="center"
-            mt="10px"
-            fontSize={{ base: "25px", md: "35px" }}
-          >
-            Select Defenders For Your DoLL Team!
-          </Heading>
-          <Text>
-            Browse through your Axies below and click on their card to select
-            them into your Team.
-          </Text>
-          <Text>
-            Once selected, use the "X" on your Axie Team's cards to swap them
-            out for a different set of Axies.
-          </Text>
-          <Text>
-            Once you have 3 Axies selected, click "LOCK IN YOUR TEAM"!
-          </Text>
-          <Text>
-            Registering Axies is free, and you can always come back to Register
-            different Axies!
-          </Text>
-        </VStack>
-      ) : (
-        <VStack maxW={"900px"} textAlign="left">
-          <Heading
-            textAlign="left"
-            mt="10px"
-            fontSize={{ base: "25px", md: "35px" }}
-          >
-            YOU'RE READY TO PLAY DoLL!
-          </Heading>
-          <Text>1. Register 3 of your Axies</Text>
-          <Text>2. Practice Mode (5 Training Shields Given Daily)</Text>
-          <Text>3. Ranked Mode (Enlist Your Axies & Buy Shield to Enter)</Text>
-        </VStack>
-      )}
-
-      <SimpleGrid
-        columns={{ base: 1, xl: 6 }}
-        className="centerFlex"
-        borderRadius="15px"
-        spacingY="10px"
-        w="100%"
-      >
-        <GridItem
-          bg={useColorModeValue("gray.300", "gray.800")}
-          h="100%"
-          colSpan={1}
-          borderRadius="15px"
-          mr={{ base: "0px", xl: "10px" }}
-        >
-          <VStack h="100%">
-            {/* <Heading mt="20px" fontSize="30px">
-              ACTIONS
-            </Heading> */}
-            {
-              <SimpleGrid
-                columns={{ base: 1, sm: 2, xl: 1 }}
-                w="100%"
-                spacing={2}
-                p={2}
-              >
-                <GridItem colSpan={1} justifyContent="center">
-                  <Flex
-                    display={isReady ? null : "none"}
-                    className={"centerFlex"}
-                    // m="10px 0px 10px 0px !important"
-                    m="auto"
-                    maxW="90%"
-                    flexWrap="wrap"
-                    borderRadius="15px"
-                    p="10px"
-                    textAlign="center"
-                    bg={useColorModeValue("gray.300", "gray.600")}
-                    justifyContent="space-evenly"
-                  >
-                    <Box fontSize="16px">Try New Axies</Box>
-                    <Button
-                      fontSize="14px"
-                      // mt="10px"
-                      variant="registration"
-                      onClick={unregister}
-                      disabled={isRegistering}
-                    >
-                      ♻️ UNREGISTER
-                    </Button>
-                  </Flex>
-                </GridItem>
-
-                <GridItem colSpan={1}>
-                  <Flex
-                    display={isReady ? null : "none"}
-                    className={"centerFlex"}
-                    // m="10px 0px 10px 0px !important"
-                    m="auto"
-                    maxW="90%"
-                    flexWrap="wrap"
-                    borderRadius="15px"
-                    p="10px"
-                    textAlign="center"
-                    bg={useColorModeValue("gray.300", "gray.600")}
-                    justifyContent="space-evenly"
-                  >
-                    <Box fontSize="16px">Compete in Ranked</Box>
-                    <Button
-                      fontSize="14px"
-                      // mt="10px"
-                      variant="registration"
-                      onClick={() => router.push("/game/enlist")}
-                      disabled={isRegistering}
-                    >
-                      🏹 ENLIST
-                    </Button>
-                  </Flex>
-                </GridItem>
-
-                <GridItem colSpan={{ base: 1, sm: 3, xl: 1 }}>
-                  <Flex
-                    display={isReady ? null : "none"}
-                    // columnGap="10px"
-                    // mt="0px!important"
-                    // pb="5px"
-                    w="100%"
-                    maxW="500px"
-                    m="auto"
-                    alignItems={"center"}
-                    justifyContent="space-around"
-                  >
-                    <SimpleGrid
-                      columns={{ base: 3, lg: 1 }}
-                      spacing={2}
-                      alignItems="center"
-                    >
-                      <GridItem colSpan={1}>
-                        <Heading textAlign={"center"} size="md">
-                          Download DoLL:
-                        </Heading>
-                      </GridItem>
-                    </SimpleGrid>
-                  </Flex>
-                </GridItem>
-              </SimpleGrid>
+    <Console w="100%">
+      <Flex justifyContent={"space-between"}>
+        <Heading size="lg">
+          {isRegistered
+            ? "✅Your Axie Team is Ready!"
+            : "📜Select 3 Axies to Register!"}
+        </Heading>
+        <Flex>
+          {isRegistering && <Loading width="40px" />}
+          <Button
+            variant="primary"
+            onClick={isRegistered ? unregister : register}
+            isDisabled={
+              isRegistering ||
+              (registeringAxies.length !== 3 && registeredAxies.length !== 3)
             }
-
-            {!isReady && (
-              <Flex
-                className={"centerFlex"}
-                m="10px 0px 10px 0px !important"
-                maxW="90%"
-                flexWrap="wrap"
-                borderRadius="15px"
-                p="10px"
-                textAlign="center"
-                bg="gray.300"
-              >
-                <Box fontSize="16px" color="black">
-                  Select 3 axies to participate in DoLL!
-                </Box>
-                <Button
-                  variant="registration"
-                  mt="10px"
-                  fontSize="14px"
-                  className="buttonFadein"
-                  onClick={completeRegistration}
-                  // display={isFullTeam ? null : "none"}
-                  disabled={!isFullTeam || isRegistering}
-                >
-                  LOCK IN YOUR TEAM
-                </Button>
-              </Flex>
-            )}
-          </VStack>
-        </GridItem>
-        <GridItem
-          bg={useColorModeValue("gray.300", "gray.800")}
-          borderRadius="15px"
-          colSpan={5}
-          overflowX="scroll"
-        >
-          <SimpleGrid
-            minW="1000px"
-            columns={3}
-            display="flex"
-            alignItems="space-between"
-            justifyContent="center"
-            textAlign="center"
           >
-            <Team
-              registeredAxies={registeredAxies}
-              setRegisteringAxies={setRegisteringAxies}
-              registeringAxies={registeringAxies}
-              unregister={unregister}
-            />
-          </SimpleGrid>
-        </GridItem>
-      </SimpleGrid>
-      <VStack
-        borderRadius="15px"
-        bg={useColorModeValue("gray.300", "gray.800")}
-      >
-        <Flex
-          flexDirection={{ base: "column", sm: "row" }}
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Heading fontSize="33px">
-            Total Axies : {axieList && axieList.length}
-          </Heading>
+            {isRegistered ? "♻️ UNREGISTER" : "🔒 REGISTER"}
+          </Button>
         </Flex>
-        <AxieCardsViewer
-          registeredAxies={registeredAxies}
-          registeringAxies={registeringAxies}
-          setRegisteringAxies={setRegisteringAxies}
-          axieList={axieList}
-          setAxieList={setAxieList}
-        />
-      </VStack>
-    </VStack>
+      </Flex>
+
+      <AxieTeam
+        isRegistered={isRegistered}
+        setIsRegistered={setIsRegistered}
+        registeredAxies={registeredAxies}
+        setRegisteredAxies={setRegisteredAxies}
+        registeringAxies={registeringAxies}
+        setRegisteringAxies={setRegisteringAxies}
+      />
+
+      <Divider p="10px 0" />
+
+      <Flex justifyContent="space-between" w="100%" wrap="wrap" p="10px 0">
+        <Heading size="lg">Total Axies : {axieList?.length}</Heading>
+        <Flex alignItems="center">
+          <IconButton
+            variant="primary"
+            size="sm"
+            aria-label="Previous Page."
+            onClick={() => {
+              setCurrentPage((prev) => (prev <= 1 ? 1 : prev - 1))
+              setPageInput((prev) => (prev <= 1 ? 1 : prev - 1))
+            }}
+            mr="5px"
+          >
+            <ChevronLeftIcon boxSize={6} />
+          </IconButton>
+          <Box mr="5px">Page</Box>
+          <Tooltip
+            placement="top"
+            label={<Console>Press enter to change the page.</Console>}
+          >
+            <form onSubmit={updatePage}>
+              <Input
+                type="number"
+                bg="gray.800"
+                w="100px"
+                value={pageInput}
+                onChange={handlePageInput}
+              />
+            </form>
+          </Tooltip>
+          <Flex className="centerFlex">
+            <Box m="0px 5px 0px 5px">of {pages.length}</Box>
+          </Flex>
+          <IconButton
+            variant="primary"
+            size="sm"
+            aria-label="Next Page."
+            ml="5px"
+            onClick={() => {
+              setCurrentPage((prev) =>
+                prev >= pages.length ? pages.length : prev + 1
+              )
+              setPageInput((prev) =>
+                prev >= pages.length ? pages.length : prev + 1
+              )
+            }}
+          >
+            <ChevronRightIcon boxSize={6} />
+          </IconButton>
+        </Flex>
+      </Flex>
+      {!loading ? (
+        <SimpleGrid columns={{ sm: 1, md: 2, xl: 3 }} spacing="10px">
+          {axieList
+            .slice((currentPage - 1) * perPage, currentPage * perPage)
+            .map((axie, index) => (
+              <GridItem
+                key={index + "_axieCard2"}
+                display="flex"
+                justifyContent={"center"}
+              >
+                <AxieCard
+                  registeredAxies={registeredAxies}
+                  registeringAxies={registeringAxies}
+                  setRegisteringAxies={setRegisteringAxies}
+                  axie={axie}
+                />
+              </GridItem>
+            ))}
+        </SimpleGrid>
+      ) : (
+        <Loading width="150px" />
+      )}
+    </Console>
   )
 }

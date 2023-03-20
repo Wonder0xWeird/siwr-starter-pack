@@ -6,7 +6,7 @@ const roninJsonRpcUrl = CONNECT_TO_SAIGON_TESTNET
   : "https://api.roninchain.com/rpc"
 
 const siwrConfig = {
-  allowListed: false,
+  allowListed: true,
   connectToSaigon: CONNECT_TO_SAIGON_TESTNET,
   chainId: chainId,
   roninJsonRpcUrl: roninJsonRpcUrl,

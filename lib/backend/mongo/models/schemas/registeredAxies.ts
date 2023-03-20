@@ -5,36 +5,11 @@ import { type IUser, userSchema } from "./user"
 interface IRegisteredAxie {
   _id: mongoose.Types.ObjectId
   registeredBy: IUser
-  axieId: number
+  id: string
   class: string
-  body: string
+  bodyShape: string
   color: string
-  parts: {
-    eyes: {
-      skillName: string
-      skillLevel: number
-    }
-    ears: {
-      skillName: string
-      skillLevel: number
-    }
-    back: {
-      skillName: string
-      skillLevel: number
-    }
-    mouth: {
-      skillName: string
-      skillLevel: number
-    }
-    horn: {
-      skillName: string
-      skillLevel: number
-    }
-    tail: {
-      skillName: string
-      skillLevel: number
-    }
-  }
+  parts: [{ type: string; id: string; name: string; class: string }]
   createdAt: number
   updatedAt: number
 }
@@ -49,50 +24,15 @@ type IRegisteredAxieModelType = mongoose.Model<
 
 const registeredAxieSchemaObject = {
   registeredBy: userSchema,
-  axieId: {
-    type: Number,
+  id: {
+    type: String,
     required: true,
     unique: true,
   },
   class: String,
-  body: String,
+  bodyShape: String,
   color: String,
-  parts: {
-    eyes: {
-      skillName: String,
-      skillLevel: Number,
-    },
-    ears: {
-      skillName: String,
-      skillLevel: Number,
-    },
-    back: {
-      skillName: String,
-      skillLevel: Number,
-    },
-    mouth: {
-      skillName: String,
-      skillLevel: Number,
-    },
-    horn: {
-      skillName: String,
-      skillLevel: Number,
-    },
-    tail: {
-      skillName: String,
-      skillLevel: Number,
-    },
-  },
-  seasonsEnlisted: {
-    type: [
-      {
-        season: Number,
-        isEnlisted: Boolean,
-        user: userSchema,
-      },
-    ],
-    default: [],
-  },
+  parts: [{ type: { type: String }, id: String, name: String, class: String }],
   createdAt: {
     type: Number,
     default: Date.now(),

@@ -1,5 +1,5 @@
 import { ethers } from "ethers"
-import { getAxieDetail } from "./graphQueries"
+import { getAxieDetail } from "../../../frontend/graphQueries"
 import { Account, RegisteredAxie } from "../../mongo/models/models"
 // import { nullifyTransaction } from "../payments/payments"
 

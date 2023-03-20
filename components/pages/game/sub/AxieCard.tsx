@@ -1,182 +1,129 @@
 import React from "react"
 import {
   Box,
+  Button,
   Flex,
-  GridItem,
-  Heading,
   Image,
-  keyframes,
   SimpleGrid,
-  Tooltip,
-  useColorModeValue,
   VStack,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  useDisclosure,
+  IconButton,
 } from "@chakra-ui/react"
+import { SmallCloseIcon } from "@chakra-ui/icons"
 
-import styles from "./register.module.css"
-import RegisterError from "./RegisterError"
 import CharacterSkills from "./CharacterSkills"
 import AxiePart from "./AxiePart"
+import Console from "../../../common/Console"
 
-//Returns cards for all the user's axies returned by a GraphQL request
 export default function AxieCard(props) {
-  const [errorRegistering, setErrorRegistering] = React.useState({
-    id: "",
-    error: "",
-    isError: false,
-  })
-  const [scrollPos, setScrollPos] = React.useState(0)
+  const [errorMessage, setErrorMessage] = React.useState<string>("")
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const cancelRef = React.useRef()
 
-  function registerAxie() {
-    if (!props.pedestalColor) {
-      const scrollElement: Element = document.getElementById("axielist")
-      const scrollValue = scrollElement.scrollLeft
-      if (props.registeredAxies.length === 3) {
-        const errorMsg =
-          "You've already registered 3 axies. Unregister to select a different team."
-        console.log(errorMsg, props.registeringAxies)
-        console.log(errorMsg, props.registeredAxies)
-        setScrollPos(scrollValue)
-        setErrorRegistering({
-          id: props.axie.id,
-          error: errorMsg,
-          isError: true,
-        })
-        setTimeout(() => {
-          setErrorRegistering({ id: "", error: "", isError: false })
-        }, 6000)
-      } else if (props.registeringAxies.length == 3) {
-        const errorMsg = "You can only have 3 axies registered at a time!"
-        console.log(errorMsg, props.registeringAxies)
-        setScrollPos(scrollValue)
-        setErrorRegistering({
-          id: props.axie.id,
-          error: errorMsg,
-          isError: true,
-        })
-        setTimeout(() => {
-          setErrorRegistering({ id: "", error: "", isError: false })
-        }, 6000)
-      } else if (
-        props.registeringAxies.some((regAxie) => regAxie.id === props.axie.id)
-      ) {
-        const errorMsg = "Error, duplicate axie!"
-        console.log(errorMsg, props.registeringAxies)
-        setScrollPos(scrollValue)
-        setErrorRegistering({
-          id: props.axie.id,
-          error: errorMsg,
-          isError: true,
-        })
-        setTimeout(() => {
-          setErrorRegistering({ id: "", error: "", isError: false })
-        }, 6000)
-      } else {
-        const errorMsg = "No error"
-        setErrorRegistering({
-          id: props.axie.id,
-          error: errorMsg,
-          isError: false,
-        })
-        setTimeout(() => {
-          setErrorRegistering({ id: "", error: "", isError: false })
-        }, 6000)
-        setScrollPos(scrollValue)
-        props.setRegisteringAxies((prevState) => [...prevState, props.axie])
-      }
+  function selectAxie() {
+    if (props.pedestal) return
+
+    console.log("props.registeringAxies:", props.registeringAxies)
+
+    if (props.registeredAxies.length === 3) {
+      onOpen()
+      setErrorMessage(
+        "You've already registered 3 axies. Unregister to select a different team."
+      )
+    } else if (props.registeringAxies.length == 3) {
+      onOpen()
+      setErrorMessage(
+        "You already have 3 axies selected for registration. To select a different team, deselect one of the axies you've already selected."
+      )
+    } else if (
+      props.registeringAxies.some((regAxie) => regAxie.id === props.axie.id)
+    ) {
+      onOpen()
+      setErrorMessage("You have already selected this axie for registering.")
+    } else {
+      console.log("props.axie:", props.axie)
+      props.setRegisteringAxies((prevState) => [...prevState, props.axie])
     }
   }
 
-  React.useEffect(() => {
-    if (!props.pedestalColor) {
-      const scrollElement: Element = document.getElementById("axielist")
-      scrollElement.scroll({
-        left: props.scrollPos,
-        behavior: "auto",
-      })
-    }
-  }, [])
+  function deselectAxie(e) {
+    props.setRegisteringAxies((prevState) =>
+      prevState.filter((axie) => axie.id !== props.axie.id)
+    )
+  }
 
   return (
-    <VStack
-      id={props.axie.id}
-      onClick={registerAxie}
-      boxShadow="0px 5px 5px 0 rgb(0, 0, 0, .2)"
-      className={styles.axieCard}
-      mt="0px!important"
-      border={props.pedestalColor ? "1px solid " + props.pedestalColor : "none"}
-      borderRadius="10px"
-      bg={
-        props.pedestalColor
-          ? useColorModeValue("gray.200", "gray.700")
-          : useColorModeValue("gray.200", "gray.700")
-      }
-      _hover={{ bg: useColorModeValue("gray.100", "gray.600") }}
-    >
-      {/* Absolute positioned error message over the axie card which prompted the error */}
-      {errorRegistering.isError && (
-        <RegisterError
-          scrollPos={props.scrollPos}
-          error={errorRegistering.error}
+    <Console onClick={selectAxie} w="350px" h="350px" position="relative">
+      {props.pedestal && !props.registered && (
+        <IconButton
+          variant="primary"
+          size="xs"
+          onClick={deselectAxie}
+          aria-label="Deselect Axie"
+          icon={<SmallCloseIcon boxSize={4} />}
+          position="absolute"
+          right="10px"
         />
       )}
-      <SimpleGrid
-        columns={2}
-        position="relative"
-        width="100%"
-        // overflow="hidden"
-      >
-        <GridItem colSpan={1} className={styles.axieCard_top}>
-          <Box
-            color={useColorModeValue("black", "white")}
-            mb="3px"
-            fontSize="11px"
-            fontWeight="800"
-            textAlign="center"
-          >
-            {
-              //concatenate props.axie.name to 8 characters
-              props.axie.name.length > 13
+      <Flex>
+        <VStack w="50%">
+          {props.pedestal ? (
+            <Box textAlign="center">{`Axie ${props.axie.id}`}</Box>
+          ) : (
+            <Box textAlign="center">
+              {props.axie.name.length > 13
                 ? props.axie.name.substring(0, 13) + "..."
-                : props.axie.name
-            }
-          </Box>
-          <Flex
-            color={useColorModeValue("black", "white")}
-            fontSize="11px"
-            textAlign="center"
-            mb="3px"
-            w="100%"
-            gap="5px"
-            alignItems="center"
-            justifyContent="center"
-          ></Flex>
-          {/* DoLL-specific character skills i.e. HP, armor, movespeed, hp regen*/}
-          <CharacterSkills axie={props.axie} />
-        </GridItem>
+                : props.axie.name}
+            </Box>
+          )}
 
-        <GridItem colSpan={1}>
-          <Image src={props.axie.image} className={styles.axieCardImage} />
-        </GridItem>
-      </SimpleGrid>
-      <SimpleGrid
-        spacing="5px"
-        columns={3}
-        flexWrap="wrap"
-        alignItems="center"
-        justifyContent="center"
-        fontSize="13px"
-        className={styles.axieCard_bot + " centerFlex"}
-        width="100%"
-      >
+          <CharacterSkills axie={props.axie} />
+        </VStack>
+        <Image
+          w="50%"
+          src={`https://axiecdn.axieinfinity.com/axies/${props.axie.id}/axie/axie-full-transparent.png`}
+        />
+      </Flex>
+
+      <SimpleGrid spacing="5px" columns={3} width="100%">
         {props.axie.parts.map((part, index) => (
-          <AxiePart
-            customStyles={styles.partContainerCard}
-            axieId={props.axie.id}
-            key={index}
-            part={part}
-          />
+          <AxiePart axieId={props.axie.id} key={index} part={part} />
         ))}
       </SimpleGrid>
-    </VStack>
+
+      <AlertDialog
+        leastDestructiveRef={cancelRef}
+        isOpen={isOpen}
+        onClose={onClose}
+        motionPreset="slideInBottom"
+        isCentered
+      >
+        <AlertDialogOverlay />
+        <AlertDialogContent>
+          <Console>
+            <AlertDialogHeader>Error Selecting Axie:</AlertDialogHeader>
+            <AlertDialogBody>{errorMessage}</AlertDialogBody>
+            <AlertDialogFooter>
+              <Button
+                variant="primary"
+                ref={cancelRef}
+                onClick={() => {
+                  onClose()
+                  setErrorMessage("")
+                }}
+              >
+                OK
+              </Button>
+            </AlertDialogFooter>
+          </Console>
+        </AlertDialogContent>
+      </AlertDialog>
+    </Console>
   )
 }
