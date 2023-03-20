@@ -2,6 +2,8 @@ import { forwardRef, Box, BoxProps, StackProps } from "@chakra-ui/react"
 
 interface ConsoleProps extends BoxProps {
   header?: boolean
+  hover?: boolean
+  selected?: boolean
 }
 
 const Console = forwardRef<ConsoleProps, "div">((props, ref) => (
@@ -12,11 +14,16 @@ const Console = forwardRef<ConsoleProps, "div">((props, ref) => (
     bg={
       props.header
         ? "linear-gradient(75deg, #34aeff 60%, #1c90ff 100%)"
+        : props.selected
+        ? "#029eff71"
         : "gray.700"
     }
     p="10px 15px"
     ref={ref}
     color="gray.100"
+    transition="all 0.2s"
+    _hover={props.hover ? { bg: "#029eff50", transition: "all 0.2s" } : {}}
+    cursor={props.hover ? "pointer" : "default"}
     {...props}
   >
     {props.children}

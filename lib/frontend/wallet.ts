@@ -83,7 +83,7 @@ export async function getConnectionDetails() {
     /(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i
   )
 
-  let web3Provider, signature, connectRequestBody
+  let web3Provider, connectRequestBody
 
   if (!isMobile) {
     if (window.ronin === undefined) {
@@ -96,14 +96,12 @@ export async function getConnectionDetails() {
 
   if (await isUnlocked(web3Provider)) {
     const { signature, message } = await getSiwrSignature(web3Provider, nonce)
-    console.log("message:", message)
     connectRequestBody = {
       message: message,
       nonce: nonce,
       signature: signature,
       redirect: false,
     }
-    console.log("connectBody:", connectRequestBody)
   } else {
     alert("You must unlock your Ronin wallet.")
   }

@@ -1,14 +1,6 @@
-import {
-  Box,
-  VStack,
-  SimpleGrid,
-  GridItem,
-  Image,
-  useColorModeValue,
-  Tooltip,
-} from "@chakra-ui/react"
-import { getClassBorder } from "../../../../lib/utils/axieFeatures/colors"
-import { getAxieGameStats } from "../../../../lib/utils/axieFeatures/stats"
+import { SimpleGrid, GridItem, Image } from "@chakra-ui/react"
+import { getClassBorder } from "../../../../../lib/utils/axieFeatures/colors"
+import { getAxieGameStats } from "../../../../../lib/utils/axieFeatures/stats"
 
 export default function CharacterSkills(props) {
   return (

@@ -1,11 +1,8 @@
-import { Box, Flex, GridItem, Image, Tooltip, VStack } from "@chakra-ui/react"
-import {
-  getClassBg,
-  getClassBorder,
-} from "../../../../lib/utils/axieFeatures/colors"
-import { getPartAssets } from "../../../../lib/utils/axieFeatures/parts"
+import { Box, Flex, Image, VStack } from "@chakra-ui/react"
+import { getClassBg } from "../../../../../lib/utils/axieFeatures/colors"
+import { getPartAssets } from "../../../../../lib/utils/axieFeatures/parts"
 
-import { SKILL_DATA } from "../../../../lib/utils/axieFeatures/skills"
+import { SKILL_DATA } from "../../../../../lib/utils/axieFeatures/skills"
 
 export default function AxieV3Card({ part }) {
   const { image, icon } = getPartAssets(part)

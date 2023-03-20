@@ -8,6 +8,7 @@ import {
 import { authOptions } from "../auth/[...nextauth]"
 import { getServerSession } from "next-auth/next"
 import axios from "axios"
+import { getAxieDetail } from "../../../lib/backend/api/utils/models"
 
 export default async function handler(
   req: NextApiRequest,
@@ -106,54 +107,4 @@ export default async function handler(
       data: null,
     })
   }
-}
-
-async function getAxieDetail(axieId) {
-  const headers = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  }
-
-  const axieQuery = {
-    operationName: "GetAxieDetail",
-    variables: {
-      axieId: axieId,
-    },
-    query: `query GetAxieDetail($axieId: ID!) {
-            axie(axieId: $axieId) {
-                ...AxieDetail
-            }
-        }
-            
-        fragment AxieDetail on Axie {
-            id
-            image
-            class
-            name
-            genes
-            owner
-            bodyShape
-            parts {
-                type
-                id
-                name
-                class
-            }
-        }`,
-  }
-
-  return await axios
-    .post(
-      "https://graphql-gateway.axieinfinity.com/graphql",
-      axieQuery,
-      headers
-    )
-    .then((result) => {
-      return result.data.data.axie
-    })
-    .catch((err) => {
-      console.log("Error fetching user Axies:", err)
-      return null
-    })
 }

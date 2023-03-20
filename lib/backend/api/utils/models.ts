@@ -1,7 +1,5 @@
-import { ethers } from "ethers"
-import { getAxieDetail } from "../../../frontend/graphQueries"
+import axios from "axios"
 import { Account, RegisteredAxie } from "../../mongo/models/models"
-// import { nullifyTransaction } from "../payments/payments"
 
 export async function getOrCreateModelInstance(model, queryRequirement) {
   let instance
@@ -36,7 +34,7 @@ export async function getTokenOwnerUserInfo(tokenType, tokenId) {
   switch (tokenType) {
     case "Axie":
       {
-        const axie = await getAxieDetail(tokenId) //, "https://doll.tioland.com/"
+        const axie = await getAxieDetail(tokenId)
         user = await Account.findOne({ "user.address": axie.owner }).then(
           (foundAccount) => foundAccount.user
         )
@@ -49,4 +47,54 @@ export async function getTokenOwnerUserInfo(tokenType, tokenId) {
     //   break
   }
   return user
+}
+
+export async function getAxieDetail(axieId) {
+  const headers = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }
+
+  const axieQuery = {
+    operationName: "GetAxieDetail",
+    variables: {
+      axieId: axieId,
+    },
+    query: `query GetAxieDetail($axieId: ID!) {
+            axie(axieId: $axieId) {
+                ...AxieDetail
+            }
+        }
+            
+        fragment AxieDetail on Axie {
+            id
+            image
+            class
+            name
+            genes
+            owner
+            bodyShape
+            parts {
+                type
+                id
+                name
+                class
+            }
+        }`,
+  }
+
+  return await axios
+    .post(
+      "https://graphql-gateway.axieinfinity.com/graphql",
+      axieQuery,
+      headers
+    )
+    .then((result) => {
+      return result.data.data.axie
+    })
+    .catch((err) => {
+      console.log("Error fetching user Axies:", err)
+      return null
+    })
 }

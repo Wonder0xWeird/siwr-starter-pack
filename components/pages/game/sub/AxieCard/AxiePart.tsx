@@ -1,6 +1,6 @@
 import { Box, GridItem, Tooltip, VStack } from "@chakra-ui/react"
-import { getClassBorder } from "../../../../lib/utils/axieFeatures/colors"
-import { getPartAssets } from "../../../../lib/utils/axieFeatures/parts"
+import { getClassBorder } from "../../../../../lib/utils/axieFeatures/colors"
+import { getPartAssets } from "../../../../../lib/utils/axieFeatures/parts"
 import AxieV3Card from "./AxieV3Card"
 
 export default function AxiePart(props) {

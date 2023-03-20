@@ -20,6 +20,7 @@ export default function AxieTeam(props) {
             justifyContent={"center"}
             colSpan={1}
             key={`${index}_pedestal_placeholder`}
+            minW="350px"
           >
             <Console
               w="350px"
@@ -53,6 +54,7 @@ export default function AxieTeam(props) {
                   axie={axie}
                   registeringAxies={props.registeringAxies}
                   setRegisteringAxies={props.setRegisteringAxies}
+                  selected
                 />
               </GridItem>
             ))
@@ -70,6 +72,7 @@ export default function AxieTeam(props) {
                   axie={axie}
                   registeringAxies={props.registeringAxies}
                   setRegisteringAxies={props.setRegisteringAxies}
+                  selected
                 />
               </GridItem>
             ))}

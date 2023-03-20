@@ -19,7 +19,7 @@ import { SmallCloseIcon } from "@chakra-ui/icons"
 
 import CharacterSkills from "./CharacterSkills"
 import AxiePart from "./AxiePart"
-import Console from "../../../common/Console"
+import Console from "../../../../common/Console"
 
 export default function AxieCard(props) {
   const [errorMessage, setErrorMessage] = React.useState<string>("")
@@ -59,7 +59,14 @@ export default function AxieCard(props) {
   }
 
   return (
-    <Console onClick={selectAxie} w="350px" h="350px" position="relative">
+    <Console
+      onClick={selectAxie}
+      w="350px"
+      h="350px"
+      position="relative"
+      hover={props.hover}
+      selected={props.selected}
+    >
       {props.pedestal && !props.registered && (
         <IconButton
           variant="primary"

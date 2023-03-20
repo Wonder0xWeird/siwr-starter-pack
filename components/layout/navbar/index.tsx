@@ -10,6 +10,7 @@ import MobileNav from "./sub/MobileNav"
 export default function Navbar() {
   const router = useRouter()
   const currentPage = router.pathname.split("/")[1]
+  const navBarBreakPoint = 599
 
   async function connectToRonin() {
     console.log("Ronin Wallet Connected")
@@ -32,7 +33,7 @@ export default function Navbar() {
     })
   }
 
-  return windowWidth(599) ? (
+  return windowWidth(navBarBreakPoint) ? (
     <DesktopNav currentPage={currentPage} connectToRonin={connectToRonin} />
   ) : (
     <MobileNav currentPage={currentPage} connectToRonin={connectToRonin} />
