@@ -23,8 +23,8 @@ export function getPartAssets(part) {
   )
   const partInt = parseInt(partBinary, 2)
   const partString = partInt >= 10 ? `${partInt}` : `0${partInt}`
-  const image = `/Cards/${partType}/${partClass}/${`${partClass}-${partType}-${partString}`}.png`
-  const icon = `/Cards/icon/${partType}.png`
+  const image = `/cards/${partType}/${partClass}/${`${partClass}-${partType}-${partString}`}.png`
+  const icon = `/cards/icon/${partType}.png`
 
   return { image, icon }
 }
