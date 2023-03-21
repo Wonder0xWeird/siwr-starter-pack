@@ -87,6 +87,16 @@ const theme = extendTheme({
           borderRadius: "25px",
           transition: "all 0.2s",
           margin: "0 2px",
+          "-webkit-tap-highlight-color": "transparent",
+          "-webkit-touch-callout": "none",
+          "-webkit-user-select": "none",
+          "-khtml-user-select": "none",
+          "-moz-user-select": "none",
+          "-ms-user-select": "none",
+          "user-select": "none",
+          _focus: {
+            outline: "none !important",
+          },
           _hover: {
             paddingBottom: "2px",
             borderTop: "1px solid #1A202C",
