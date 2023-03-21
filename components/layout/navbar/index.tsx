@@ -13,7 +13,6 @@ export default function Navbar() {
   const navBarBreakPoint = 599
 
   async function connectToRonin() {
-    console.log("Ronin Wallet Connected")
     const connectRequestBody = await getConnectionDetails()
     if (!connectRequestBody) {
       return
