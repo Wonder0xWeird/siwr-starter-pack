@@ -71,70 +71,87 @@ export interface IRoninConfig {
   receiver: string
 }
 
+interface IMessageObject {
+  domain: string
+  address: string
+  statement: string
+  uri: string
+  version: string
+  chainId: string
+  nonce: string
+  issuedAt: string
+}
+
+interface IConnectRequestBody {
+  message: string
+  nonce: string
+  signature: string
+  redirect: boolean
+  address?: string
+}
+
 export async function getConnectionDetails() {
   const nonce = await axios
     .post("/api/auth/generateNonce")
     .then(async (result) => result.data.data)
+    .catch((err) => console.log(err))
 
-  const isMobile = navigator.userAgent.match(
-    /(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i
-  )
+  let connectRequestBody: IConnectRequestBody, signature: string
 
-  let web3Provider, connectRequestBody
-
-  if (!isMobile) {
-    if (window.ronin === undefined) {
-      return -1
-    }
-    web3Provider = new ethers.providers.Web3Provider(window.ronin.provider)
-  } else {
-    web3Provider = await connectMobileProvider()
-  }
-
-  if (await isUnlocked(web3Provider)) {
-    const { signature, message } = await getSiwrSignature(web3Provider, nonce)
-    connectRequestBody = {
-      message: message,
-      nonce: nonce,
-      signature: signature,
-      redirect: false,
-    }
-  } else {
-    alert("You must unlock your Ronin wallet.")
-  }
-
-  return connectRequestBody
-}
-
-async function getSiwrSignature(web3Provider, nonce) {
-  const userAddress = await (await web3Provider.getSigner()).getAddress()
-  let signature
-  let message = JSON.stringify({
+  let messageObject: IMessageObject = {
     domain: window.location.host,
-    address: userAddress,
-    statement: `${userAddress} is signing in to ${window.location.host} via SIWR.`,
+    address: undefined,
+    statement: "",
     uri: window.location.origin,
     version: "1",
     chainId: siwrConfig.chainId,
     nonce: nonce,
     issuedAt: new Date(Date.now()).toISOString(),
-  })
-
-  console.log("message", message)
-  console.log("siwrConfig.allowListed", siwrConfig.allowListed)
+  }
 
   if (siwrConfig.allowListed) {
     console.log("Ronin Wallet Connect")
-    signature = await (await web3Provider.getSigner())
-      .signMessage(message)
-      .catch(() => console.log("User rejected request"))
+
+    const isMobile = navigator.userAgent.match(
+      /(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i
+    )
+
+    let web3Provider
+
+    if (!isMobile) {
+      if (window.ronin === undefined) {
+        return -1
+      }
+      web3Provider = new ethers.providers.Web3Provider(window.ronin.provider)
+    } else {
+      web3Provider = await connectMobileProvider()
+    }
+
+    if (await isUnlocked(web3Provider)) {
+      const userAddress = await (await web3Provider.getSigner()).getAddress()
+      messageObject.address = userAddress
+      messageObject.statement = `${userAddress} is signing in to ${window.location.host} via SIWR.`
+
+      signature = await (await web3Provider.getSigner())
+        .signMessage(JSON.stringify(messageObject))
+        .catch(() => console.log("User rejected request"))
+      connectRequestBody = {
+        message: JSON.stringify(messageObject),
+        nonce: nonce,
+        signature: signature,
+        redirect: false,
+      }
+    } else {
+      alert("You must unlock your Ronin wallet.")
+    }
   } else {
     console.log("Ronin SSO Connect")
+    messageObject.statement = `User is signing in to ${window.location.host} via SIWR.`
     const SSO_URL = "https://ronin.axiedao.org/sso"
     const url =
       SSO_URL +
       "?message=" +
-      message +
+      JSON.stringify(messageObject) +
       "&ref=" +
       encodeURIComponent(window.parent.location.href) +
       "&autoclose=true"
@@ -150,15 +167,20 @@ async function getSiwrSignature(web3Provider, nonce) {
         ) {
           RoninSignatureWindow?.close()
           window.removeEventListener("message", receiveSig, false)
-          signature = event.data.message.signature
-          message = event.data.message.message
-          resolve(signature)
+          connectRequestBody = {
+            message: event.data.message.message,
+            nonce: nonce,
+            signature: event.data.message.signature,
+            address: event.data.message.address,
+            redirect: false,
+          }
+          resolve(connectRequestBody)
         }
       })
     })
   }
 
-  return { signature, message }
+  return connectRequestBody
 }
 
 export const configureRonin = async (
