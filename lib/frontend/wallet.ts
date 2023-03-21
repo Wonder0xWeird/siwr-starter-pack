@@ -120,6 +120,9 @@ async function getSiwrSignature(web3Provider, nonce) {
     issuedAt: new Date(Date.now()).toISOString(),
   })
 
+  console.log("message", message)
+  console.log("siwrConfig.allowListed", siwrConfig.allowListed)
+
   if (siwrConfig.allowListed) {
     console.log("Ronin Wallet Connect")
     signature = await (await web3Provider.getSigner())
