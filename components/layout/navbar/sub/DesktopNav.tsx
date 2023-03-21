@@ -11,7 +11,7 @@ import { sliceRoninAddress } from "../../../../lib/utils/wallet"
 import { DESIGN_MAX_WIDTH } from "../../../../styles/theme"
 
 export default function DesktopNav({ currentPage, connectToRonin }) {
-  const [showBanner, setShowBanner] = React.useState(false)
+  const [showBanner, setShowBanner] = React.useState<boolean>(false)
   const router = useRouter()
   const { data: session, status } = useSession()
 
@@ -95,7 +95,7 @@ export default function DesktopNav({ currentPage, connectToRonin }) {
                     router.push("/")
                   }}
                 >
-                  SIGN OUT
+                  Sign Out
                 </Button>
               </Flex>
             ) : (

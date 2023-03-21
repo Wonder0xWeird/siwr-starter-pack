@@ -61,9 +61,6 @@ declare global {
       roninEvent: EventListener
     }
   }
-  // interface ExternalProvider {
-  //   selectedAddress: any
-  // }
 }
 
 export interface IRoninConfig {
@@ -175,8 +172,7 @@ export const configureRonin = async (
       console.log("Ronin wallet is not installed.")
       return null
     }
-    //@ts-expect-error
-    web3Provider = new ethers.BrowserProvider(window.ronin.provider)
+    web3Provider = new ethers.providers.Web3Provider(window.ronin.provider)
   } else {
     web3Provider = await connectMobileProvider()
   }

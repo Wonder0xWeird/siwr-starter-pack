@@ -1,9 +1,6 @@
 import React from "react"
 import { Box } from "@chakra-ui/react"
 import Console from "../../../common/Console"
-
-import { useRouter } from "next/router"
-import { useSession } from "next-auth/react"
 import { DESIGN_MAX_WIDTH } from "../../../../styles/theme"
 
 export default function Banner() {

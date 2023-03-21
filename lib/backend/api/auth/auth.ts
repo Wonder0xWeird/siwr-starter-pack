@@ -3,6 +3,8 @@ import { compare } from "bcryptjs"
 import dbConnection from "../../../../lib/backend/mongo/connectDB"
 import { Account, Nonce } from "../../mongo/models/models"
 import siwrConfig from "../../../../siwr.config"
+import { NextApiResponse } from "next"
+import { Session } from "next-auth"
 
 export async function authorizeRonin(credentials) {
   try {
@@ -13,7 +15,6 @@ export async function authorizeRonin(credentials) {
     }).then(async (foundNonce) => {
       if (!foundNonce) {
         throw new Error("Invalid Nonce")
-        return null
       }
 
       const signerAddress = verifyNonceAndAddress(credentials)
@@ -93,7 +94,6 @@ export async function authorizeLogin(credentials) {
     }).then(async (foundAccount) => {
       if (!foundAccount) {
         throw new Error("Account not found.")
-        return null
       }
 
       const checkPasswordMatch = await compare(
@@ -102,7 +102,6 @@ export async function authorizeLogin(credentials) {
       )
       if (!checkPasswordMatch) {
         throw new Error("Incorrect password.")
-        return null
       }
 
       return {
@@ -118,7 +117,7 @@ export async function authorizeLogin(credentials) {
   }
 }
 
-export function isAdmin(res, session) {
+export function isAdmin(res: NextApiResponse, session: Session) {
   let isAdmin = true
   if (!session || session.user.role !== "admin") {
     isAdmin = false
@@ -132,7 +131,7 @@ export function isAdmin(res, session) {
   return isAdmin
 }
 
-export function isAdminOrVIP(res, session) {
+export function isAdminOrVIP(res: NextApiResponse, session: Session) {
   let isVIP = true
   if (
     !session ||

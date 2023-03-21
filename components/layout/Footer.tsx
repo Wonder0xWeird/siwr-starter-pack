@@ -1,7 +1,6 @@
 import { Flex, Box, Button, Image } from "@chakra-ui/react"
 import Console from "../common/Console"
 import React from "react"
-import siwrConfig from "../../siwr.config"
 
 export default function Footer() {
   return (

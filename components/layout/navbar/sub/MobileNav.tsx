@@ -19,8 +19,8 @@ import WalletConnectProvider from "@walletconnect/web3-provider"
 import { sliceRoninAddress } from "../../../../lib/utils/wallet"
 
 export default function MobileNav({ currentPage, connectToRonin }) {
-  const [showNav, setShowNav] = React.useState(false)
-  const [showBanner, setShowBanner] = React.useState(false)
+  const [showNav, setShowNav] = React.useState<boolean>(false)
+  const [showBanner, setShowBanner] = React.useState<boolean>(false)
   const router = useRouter()
   const { data: session, status } = useSession()
 
@@ -94,8 +94,6 @@ export default function MobileNav({ currentPage, connectToRonin }) {
                     <Button
                       variant="primary"
                       alignSelf="flex-end"
-                      // w="75%"
-                      // m="auto"
                       onClick={async () => {
                         const isMobile =
                           navigator.maxTouchPoints ||
@@ -112,7 +110,7 @@ export default function MobileNav({ currentPage, connectToRonin }) {
                         router.push("/")
                       }}
                     >
-                      SIGN OUT
+                      Sign Out
                     </Button>
                   </VStack>
                 </>

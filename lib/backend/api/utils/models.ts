@@ -18,10 +18,10 @@ export async function getOrCreateModelInstance(model, queryRequirement) {
   //     case "ExampleModel2":
   //       instance =
   //         (await ExampleModel2.findOne({
-  //           address: queryRequirement,
+  //           someKey: queryRequirement,
   //         }).exec()) ??
   //         (await new ExampleModel2({
-  //           address: queryRequirement,
+  //           someKey: queryRequirement,
   //         }).save())
   //       break
   //   }
@@ -42,7 +42,7 @@ export async function getTokenOwnerUserInfo(tokenType, tokenId) {
       break
     // case "OtherToken":
     //   user = await OtherToken.findOne({ tokenId: tokenId }).then(
-    //     (foundSidekick) => foundSidekick.ownedBy
+    //     (foundToken) => foundToken.ownedBy
     //   )
     //   break
   }

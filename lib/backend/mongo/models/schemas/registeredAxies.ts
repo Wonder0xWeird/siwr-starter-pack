@@ -45,7 +45,7 @@ const registeredAxieSchemaObject = {
 
 const nonUniqueRegisteredAxieSchemaObject = {
   ...registeredAxieSchemaObject,
-  axieId: { type: Number, required: true },
+  id: { type: String, required: true },
 }
 
 const registeredAxieSchema = new mongoose.Schema<

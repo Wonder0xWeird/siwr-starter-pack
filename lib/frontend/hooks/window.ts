@@ -1,7 +1,7 @@
 import React from "react"
 
 export default function windowWidth(size) {
-  const [width, setWidth] = React.useState(0)
+  const [width, setWidth] = React.useState<number>(0)
 
   React.useEffect(() => {
     function handleResize() {

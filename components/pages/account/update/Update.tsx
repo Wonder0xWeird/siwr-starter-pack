@@ -13,37 +13,29 @@ import {
   Button,
   Image,
 } from "@chakra-ui/react"
-import { ArrowBackIcon } from "@chakra-ui/icons"
-import { useColorModeValue } from "@chakra-ui/react"
 import { signIn } from "next-auth/react"
 
 import PasswordInput from "../../../common/PasswordInput"
 import Console from "../../../common/Console"
 import { sliceRoninAddress } from "../../../../lib/utils/wallet"
 
-interface UserInput {
+interface IUserInput {
   username: string
   password: string
   passwordConf: string
 }
 
-const initialUserInput: UserInput = {
-  username: "",
-  password: "",
-  passwordConf: "",
-}
-
 export default function Update(props) {
-  const bgColor = useColorModeValue("gray.50", "whiteAlpha.50")
-
   const router = useRouter()
-
   const isAccountCreation = props.user.username ? false : true
 
-  const [input, setInput] = React.useState<UserInput>(initialUserInput)
+  const [input, setInput] = React.useState<IUserInput>({
+    username: "",
+    password: "",
+    passwordConf: "",
+  })
   const [isLoading, setIsLoading] = React.useState(false)
 
-  // Controls <Input> elements for Username, Password and Confirm Password fields
   function handleInput(e) {
     setInput((prevState) => ({
       ...prevState,
@@ -66,7 +58,7 @@ export default function Update(props) {
 
     setIsLoading(true)
 
-    const createOrUpdateAccountRequest = {
+    const createOrUpdateAccountRequest: IUserInput = {
       username: input.username,
       password: input.password,
       passwordConf: input.passwordConf,
@@ -75,24 +67,19 @@ export default function Update(props) {
     axios
       .post("/api/account/update", createOrUpdateAccountRequest)
       .then(async (result) => {
-        if (result.data.statusCode === 200) {
-          const loginBody = {
-            username: result.data.data.username,
-            password: input.password,
-            redirect: false,
-          }
-
-          await signIn("login", loginBody).then((result) => {
-            console.log("Sign In Result:", result)
-          })
-
-          alert("Account updated successfully!")
-
-          // router.push("/account");
-          router.push("/account")
-        } else {
-          console.log("failure")
+        const loginBody = {
+          username: result.data.data.username,
+          password: input.password,
+          redirect: false,
         }
+
+        await signIn("login", loginBody).then((result) => {
+          console.log("Sign In Result:", result)
+        })
+
+        alert("Account updated successfully!")
+
+        router.push("/account")
       })
       .catch((error) => {
         if (error.response) {

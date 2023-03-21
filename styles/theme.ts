@@ -58,6 +58,16 @@ const theme = extendTheme({
           backgroundColor: "brand.400",
           boxShadow: "-1px 2px 12px #141921",
           transition: "all 0.5s",
+          "-webkit-tap-highlight-color": "transparent",
+          "-webkit-touch-callout": "none",
+          "-webkit-user-select": "none",
+          "-khtml-user-select": "none",
+          "-moz-user-select": "none",
+          "-ms-user-select": "none",
+          "user-select": "none",
+          _focus: {
+            outline: "none !important",
+          },
           _active: {
             backgroundColor: "brand.300",
             transform: "translate(0, 3px)",

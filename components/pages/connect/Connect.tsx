@@ -32,7 +32,7 @@ export default function Connect() {
     username: "",
     password: "",
   })
-  const [isLoggingIn, setIsLoggingIn] = React.useState(false)
+  const [isLoggingIn, setIsLoggingIn] = React.useState<boolean>(false)
 
   async function siwr() {
     setIsLoggingIn(true)
