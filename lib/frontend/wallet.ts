@@ -169,7 +169,7 @@ export const configureRonin = async (
     /(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i
   )
 
-  let web3Provider
+  let web3Provider: ethers.providers.Web3Provider
   if (!isMobile) {
     if (window.ronin === undefined) {
       console.log("Ronin wallet is not installed.")
@@ -180,7 +180,7 @@ export const configureRonin = async (
     web3Provider = await connectMobileProvider()
   }
 
-  if (await isUnlocked(web3Provider)) {
+  if (!siwrConfig.allowListed || (await isUnlocked(web3Provider))) {
     const jsonRpcSigner = await web3Provider.getSigner()
     const connectedAddress = await jsonRpcSigner.getAddress()
 
