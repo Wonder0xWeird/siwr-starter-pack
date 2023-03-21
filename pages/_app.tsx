@@ -26,7 +26,10 @@ export default function App({
 
           {/* Open Graph / Facebook */}
           <meta property="og:type" content="website" />
-          <meta property="og:url" content="https://doll.tioland.com/" />
+          <meta
+            property="og:url"
+            content="https://siwr-starter-pack.vercel.app"
+          />
           <meta property="og:title" content="Sign In With Ronin" />
           <meta
             property="og:description"
@@ -36,14 +39,20 @@ export default function App({
 
           {/* Twitter */}
           <meta property="twitter:card" content="summary" />
-          <meta property="twitter:url" content="https://doll.tioland.com/" />
+          <meta
+            property="twitter:url"
+            content="https://siwr-starter-pack.vercel.app"
+          />
           <meta property="twitter:title" content="Sign In With Ronin" />
           <meta
             property="twitter:description"
             content="Build on the Ronin Network!"
           />
           {/* Twitter image must be a absolute url */}
-          <meta property="twitter:image" content="/images/" />
+          <meta
+            property="twitter:image"
+            content="https://siwr-starter-pack.vercel.app/images/icons/ronin-logo-text.png"
+          />
         </Head>
         <Component {...pageProps} />
       </SessionProvider>

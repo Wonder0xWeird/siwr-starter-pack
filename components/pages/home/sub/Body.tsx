@@ -195,11 +195,15 @@ export default function Body() {
               staging environment.
             </ListItem>
             <ListItem>
-              The code base also contains a top level siwr.config.ts file that
-              helps configure Ronin wallet interactions for projects before and
-              after they are allow-listed by Sky Mavis. Once allow-listed,
-              switching to direct wallet interactions and transaction signing is
-              as simple as a single config switch!
+              For those interested in contributing to the SIWR Starter Pack, the
+              github repo is accepting pull requests!
+            </ListItem>
+            <ListItem>
+              As a final note, this code base also contains a top level
+              siwr.config.ts file that helps configure Ronin wallet interactions
+              for projects before and after they are allow-listed by Sky Mavis.
+              Once allow-listed, switching to direct wallet interactions and
+              transaction signing is as simple as a single config switch!
             </ListItem>
           </List>
         </AccordionPanel>
