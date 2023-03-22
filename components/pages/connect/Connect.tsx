@@ -26,6 +26,8 @@ interface ICredentials {
 export default function Connect() {
   const colSpan = useBreakpointValue({ base: 2, md: 1 })
 
+  const router = useRouter()
+
   const [loginInput, setLoginInput] = React.useState<ICredentials>({
     username: "",
     password: "",
@@ -47,7 +49,7 @@ export default function Connect() {
       await signIn("login", loginRequestBody).then((result) => {
         console.log("Sign In Result:", result)
         if (result.status === 200) {
-          useRouter().push("/account")
+          router.push("/account")
         } else {
           console.log(result.error)
           alert("Invalid credentials")

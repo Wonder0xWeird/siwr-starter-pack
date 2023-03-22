@@ -93,6 +93,7 @@ interface IConnectRequestBody extends SignInOptions {
 }
 
 export async function siwr() {
+  const router = useRouter()
   const connectRequestBody = await getConnectionDetails()
   if (!connectRequestBody) {
     alert("Ronin wallet is not installed!")
@@ -102,7 +103,7 @@ export async function siwr() {
   await signIn("ronin", connectRequestBody).then((result) => {
     console.log("Sign In Result:", result)
     if (result.status === 200) {
-      useRouter().push("/account")
+      router.push("/account")
     } else {
       console.log(result.error)
     }
