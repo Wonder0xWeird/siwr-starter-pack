@@ -3,7 +3,6 @@ import { ethers } from "ethers"
 import WalletConnectProvider from "@walletconnect/web3-provider"
 import siwrConfig from "../../siwr.config"
 import { signIn, SignInOptions } from "next-auth/react"
-import { useRouter } from "next/router"
 
 const transferAndBalanceABI = [
   {
@@ -88,12 +87,11 @@ interface IConnectRequestBody extends SignInOptions {
   message: string
   nonce: string
   signature: string
-  redirect: boolean
+  callbackUrl: string
   address?: string
 }
 
 export async function siwr() {
-  const router = useRouter()
   const connectRequestBody = await getConnectionDetails()
   if (!connectRequestBody) {
     alert("Ronin wallet is not installed!")
@@ -102,11 +100,6 @@ export async function siwr() {
 
   await signIn("ronin", connectRequestBody).then((result) => {
     console.log("Sign In Result:", result)
-    if (result.status === 200) {
-      router.push("/account")
-    } else {
-      console.log(result.error)
-    }
   })
 }
 
@@ -158,7 +151,7 @@ export async function getConnectionDetails() {
         signature: await (await web3Provider.getSigner())
           .signMessage(JSON.stringify(messageObject))
           .catch(() => console.log("User rejected request")),
-        redirect: false,
+        callbackUrl: "/account",
       }
     } else {
       alert("You must unlock your Ronin wallet.")
@@ -191,7 +184,7 @@ export async function getConnectionDetails() {
             nonce: nonce,
             signature: event.data.message.signature,
             address: event.data.message.address,
-            redirect: false,
+            callbackUrl: "/account",
           }
           resolve(connectRequestBody)
         }

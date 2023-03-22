@@ -12,7 +12,6 @@ import {
   Button,
 } from "@chakra-ui/react"
 import { signIn } from "next-auth/react"
-import { useBreakpointValue } from "@chakra-ui/react"
 
 import PasswordInput from "../../common/PasswordInput"
 import { siwr } from "../../../lib/frontend/wallet"
@@ -24,10 +23,6 @@ interface ICredentials {
 }
 
 export default function Connect() {
-  const colSpan = useBreakpointValue({ base: 2, md: 1 })
-
-  const router = useRouter()
-
   const [loginInput, setLoginInput] = React.useState<ICredentials>({
     username: "",
     password: "",
@@ -44,17 +39,15 @@ export default function Connect() {
       const loginRequestBody = {
         username: loginInput.username,
         password: loginInput.password,
-        redirect: false,
+        callbackUrl: "/account",
       }
       await signIn("login", loginRequestBody).then((result) => {
         console.log("Sign In Result:", result)
-        if (result.status === 200) {
-          router.push("/account")
-        } else {
+        if (result?.error) {
           console.log(result.error)
           alert("Invalid credentials")
-          setIsLoggingIn(false)
         }
+        setIsLoggingIn(false)
       })
     }
   }
@@ -94,7 +87,7 @@ export default function Connect() {
             </Text>
           </GridItem>
 
-          <GridItem colSpan={colSpan}>
+          <GridItem colSpan={{ base: 2, md: 1 }}>
             <FormControl>
               <FormLabel>Username</FormLabel>
               <Input
@@ -106,7 +99,7 @@ export default function Connect() {
               />
             </FormControl>
           </GridItem>
-          <GridItem colSpan={colSpan}>
+          <GridItem colSpan={{ base: 2, md: 1 }}>
             <FormControl>
               <FormLabel>Password</FormLabel>
               <PasswordInput
