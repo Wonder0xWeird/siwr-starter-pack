@@ -15,9 +15,6 @@ export default function Navbar() {
   async function connectToRonin() {
     const connectRequestBody = await getConnectionDetails()
     if (!connectRequestBody) {
-      return
-    }
-    if (connectRequestBody < 0) {
       alert("Ronin wallet is not installed!")
       return
     }

@@ -2,6 +2,7 @@ import axios from "axios"
 import { ethers } from "ethers"
 import WalletConnectProvider from "@walletconnect/web3-provider"
 import siwrConfig from "../../siwr.config"
+import { SignInOptions } from "next-auth/react"
 
 const transferAndBalanceABI = [
   {
@@ -82,7 +83,7 @@ interface IMessageObject {
   issuedAt: string
 }
 
-interface IConnectRequestBody {
+interface IConnectRequestBody extends SignInOptions {
   message: string
   nonce: string
   signature: string
@@ -96,7 +97,7 @@ export async function getConnectionDetails() {
     .then(async (result) => result.data.data)
     .catch((err) => console.log(err))
 
-  let connectRequestBody: IConnectRequestBody, signature: string
+  let connectRequestBody: IConnectRequestBody
 
   let messageObject: IMessageObject = {
     domain: window.location.host,
@@ -120,7 +121,7 @@ export async function getConnectionDetails() {
 
     if (!isMobile) {
       if (window.ronin === undefined) {
-        return -1
+        return
       }
       web3Provider = new ethers.providers.Web3Provider(window.ronin.provider)
     } else {
@@ -132,13 +133,12 @@ export async function getConnectionDetails() {
       messageObject.address = userAddress
       messageObject.statement = `${userAddress} is signing in to ${window.location.host} via SIWR.`
 
-      signature = await (await web3Provider.getSigner())
-        .signMessage(JSON.stringify(messageObject))
-        .catch(() => console.log("User rejected request"))
       connectRequestBody = {
         message: JSON.stringify(messageObject),
         nonce: nonce,
-        signature: signature,
+        signature: await (await web3Provider.getSigner())
+          .signMessage(JSON.stringify(messageObject))
+          .catch(() => console.log("User rejected request")),
         redirect: false,
       }
     } else {

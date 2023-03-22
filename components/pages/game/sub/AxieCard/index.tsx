@@ -29,8 +29,6 @@ export default function AxieCard(props) {
   function selectAxie() {
     if (props.pedestal) return
 
-    console.log("props.registeringAxies:", props.registeringAxies)
-
     if (props.registeredAxies.length === 3) {
       onOpen()
       setErrorMessage(

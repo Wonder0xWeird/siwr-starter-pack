@@ -24,7 +24,6 @@ export default function Game(props) {
     await axios
       .post("/api/inventory/register", registeringAxies)
       .then(async (result) => {
-        console.log("result.data.data:", result.data.data)
         setRegisteredAxies(result.data.data)
         setRegisteringAxies([])
         setIsRegistered(true)
