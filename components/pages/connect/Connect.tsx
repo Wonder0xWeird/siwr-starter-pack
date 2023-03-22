@@ -15,7 +15,7 @@ import { signIn } from "next-auth/react"
 import { useBreakpointValue } from "@chakra-ui/react"
 
 import PasswordInput from "../../common/PasswordInput"
-import { getConnectionDetails } from "../../../lib/frontend/wallet"
+import { siwr } from "../../../lib/frontend/wallet"
 import Console from "../../common/Console"
 
 interface ICredentials {
@@ -26,39 +26,11 @@ interface ICredentials {
 export default function Connect() {
   const colSpan = useBreakpointValue({ base: 2, md: 1 })
 
-  const router = useRouter()
-
   const [loginInput, setLoginInput] = React.useState<ICredentials>({
     username: "",
     password: "",
   })
   const [isLoggingIn, setIsLoggingIn] = React.useState<boolean>(false)
-
-  async function siwr() {
-    setIsLoggingIn(true)
-    console.log("Sign In With Ronin Initiated...")
-    const connectRequestBody = await getConnectionDetails()
-    if (!connectRequestBody) {
-      setIsLoggingIn(false)
-      return
-    }
-    if (connectRequestBody < 0) {
-      alert("Ronin wallet is not installed!")
-      setIsLoggingIn(false)
-      return
-    }
-
-    await signIn("ronin", connectRequestBody).then((result) => {
-      console.log("Sign In Result:", result)
-      if (result.status === 200) {
-        router.push("/account")
-        setIsLoggingIn(false)
-      } else {
-        console.log(result.error)
-        setIsLoggingIn(false)
-      }
-    })
-  }
 
   async function login() {
     setIsLoggingIn(true)
@@ -75,7 +47,7 @@ export default function Connect() {
       await signIn("login", loginRequestBody).then((result) => {
         console.log("Sign In Result:", result)
         if (result.status === 200) {
-          router.push("/account")
+          useRouter().push("/account")
         } else {
           console.log(result.error)
           alert("Invalid credentials")

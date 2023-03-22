@@ -2,7 +2,8 @@ import axios from "axios"
 import { ethers } from "ethers"
 import WalletConnectProvider from "@walletconnect/web3-provider"
 import siwrConfig from "../../siwr.config"
-import { SignInOptions } from "next-auth/react"
+import { signIn, SignInOptions } from "next-auth/react"
+import { useRouter } from "next/router"
 
 const transferAndBalanceABI = [
   {
@@ -89,6 +90,23 @@ interface IConnectRequestBody extends SignInOptions {
   signature: string
   redirect: boolean
   address?: string
+}
+
+export async function siwr() {
+  const connectRequestBody = await getConnectionDetails()
+  if (!connectRequestBody) {
+    alert("Ronin wallet is not installed!")
+    return
+  }
+
+  await signIn("ronin", connectRequestBody).then((result) => {
+    console.log("Sign In Result:", result)
+    if (result.status === 200) {
+      useRouter().push("/account")
+    } else {
+      console.log(result.error)
+    }
+  })
 }
 
 export async function getConnectionDetails() {

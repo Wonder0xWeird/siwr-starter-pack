@@ -10,7 +10,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider"
 import { sliceRoninAddress } from "../../../../lib/utils/wallet"
 import { DESIGN_MAX_WIDTH } from "../../../../styles/theme"
 
-export default function DesktopNav({ currentPage, connectToRonin }) {
+export default function DesktopNav({ currentPage, siwr }) {
   const [showBanner, setShowBanner] = React.useState<boolean>(false)
   const router = useRouter()
   const { data: session, status } = useSession()
@@ -107,7 +107,7 @@ export default function DesktopNav({ currentPage, connectToRonin }) {
                   🌟 LOGIN 🌟
                 </Button>
 
-                <Button variant="primary" onClick={connectToRonin}>
+                <Button variant="primary" onClick={siwr}>
                   <Image
                     src={"/images/icons/ronin-logo.svg"}
                     w="25px"
