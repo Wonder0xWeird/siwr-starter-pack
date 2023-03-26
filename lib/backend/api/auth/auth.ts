@@ -5,8 +5,10 @@ import { Account, Nonce } from "../../mongo/models/models"
 import siwrConfig from "../../../../siwr.config"
 import { NextApiResponse } from "next"
 import { Session } from "next-auth"
+import { IConnectRequestBody } from "../../../frontend/wallet"
+import { ILoginRequestBody } from "../../../../components/pages/connect/Connect"
 
-export async function authorizeRonin(credentials) {
+export async function authorizeRonin(credentials: IConnectRequestBody) {
   try {
     await dbConnection
 
@@ -60,7 +62,7 @@ export async function authorizeRonin(credentials) {
   }
 }
 
-function verifyNonceAndAddress(credentials) {
+function verifyNonceAndAddress(credentials: IConnectRequestBody) {
   let nonceCheck, addressCheck
   if (siwrConfig.allowListed) {
     nonceCheck = JSON.parse(credentials.message).nonce
@@ -85,7 +87,7 @@ function verifyNonceAndAddress(credentials) {
   return signerAddress
 }
 
-export async function authorizeLogin(credentials) {
+export async function authorizeLogin(credentials: ILoginRequestBody) {
   try {
     await dbConnection
 

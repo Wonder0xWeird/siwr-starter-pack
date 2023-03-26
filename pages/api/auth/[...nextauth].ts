@@ -1,9 +1,11 @@
 import NextAuth, { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
+import { ILoginRequestBody } from "../../../components/pages/connect/Connect"
 import {
   authorizeRonin,
   authorizeLogin,
 } from "../../../lib/backend/api/auth/auth"
+import { IConnectRequestBody } from "../../../lib/frontend/wallet"
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -27,7 +29,7 @@ export const authOptions: NextAuthOptions = {
           type: "text",
         },
       },
-      async authorize(credentials) {
+      async authorize(credentials: IConnectRequestBody) {
         return await authorizeRonin(credentials)
       },
     }),
@@ -48,7 +50,7 @@ export const authOptions: NextAuthOptions = {
           placeholder: "password...",
         },
       },
-      async authorize(credentials) {
+      async authorize(credentials: ILoginRequestBody) {
         return await authorizeLogin(credentials)
       },
     }),

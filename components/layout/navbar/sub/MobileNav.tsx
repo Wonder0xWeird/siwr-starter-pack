@@ -16,7 +16,7 @@ import { signOut, useSession } from "next-auth/react"
 
 import Banner from "./Banner"
 import WalletConnectProvider from "@walletconnect/web3-provider"
-import { sliceRoninAddress } from "../../../../lib/utils/wallet"
+import { sliceRoninAddress } from "../../../../lib/frontend/wallet"
 
 export default function MobileNav({ currentPage, siwr }) {
   const [showNav, setShowNav] = React.useState<boolean>(false)

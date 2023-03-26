@@ -23,23 +23,41 @@ export default function Body() {
         <AccordionPanel>
           <List spacing={2}>
             <ListItem>
-              This Sign In With Ronin (SIWR) Starter Package is designed to
-              serve as a web application template to help streamline the
-              on-boarding of new developers to the Ronin Network, an
-              EVM-compatible sidechain of the Ethereum Blockchain!
+              This Sign In With Ronin (SIWR) Starter Package serves as a web
+              application template to help onboard new developers to the{" "}
+              <a
+                href="https://roninchain.com/"
+                style={{ textDecoration: "underline" }}
+              >
+                Ronin Network
+              </a>
+              , an EVM-compatible sidechain of the Ethereum Blockchain!
             </ListItem>
             <ListItem>
               {" "}
-              It was built with 💖 by wonder.eth as an adaptation/extension of
-              the{" "}
+              This package was built with 💖 by wonder.eth as an
+              adaptation/extension of the{" "}
               <a
                 href="https://login.xyz/"
                 style={{ textDecoration: "underline" }}
               >
                 Sign In With Ethereum (SIWE)
               </a>{" "}
-              protocol and integrates tools from across the crypto, Axie, and
-              Ronin developer ecosystem.
+              protocol and integrates tools from across the crypto, Axie
+              Infinity, and Ronin developer ecosystems.
+            </ListItem>
+            <ListItem>
+              At its core, SIWR exposes a set of pre-defined functions for
+              logging a user into a website by signing a cryptographic message
+              with their{" "}
+              <a
+                href="https://wallet.roninchain.com/"
+                style={{ textDecoration: "underline" }}
+              >
+                Ronin wallet
+              </a>
+              , but also integrates several layers of web tooling to generate a
+              full stack web app template on top of this core functionality.
             </ListItem>
           </List>
         </AccordionPanel>
@@ -69,7 +87,14 @@ export default function Body() {
               >
                 Axie DAO's Single Sign On
               </a>{" "}
-              process until you can get your domain allow-listed with{" "}
+              process until you can get your domain{" "}
+              <a
+                href="https://docs.roninchain.com/docs/developer-guide/integrate-ronin-wallet"
+                style={{ textDecoration: "underline" }}
+              >
+                allowlisted
+              </a>{" "}
+              with{" "}
               <a
                 href="https://www.skymavis.com/"
                 style={{ textDecoration: "underline" }}
@@ -87,7 +112,7 @@ export default function Body() {
               >
                 ethers.js v5
               </a>{" "}
-              for Ronin contract interactions.
+              for Ronin blockchain interactions.
             </ListItem>
 
             <ListItem ml="30px">
@@ -136,10 +161,11 @@ export default function Body() {
                 href="https://mongoosejs.com/"
                 style={{ textDecoration: "underline" }}
               >
-                Mongoose.js
+                Mongoose.js.
               </a>
               .
             </ListItem>
+
             <ListItem ml="30px">
               Simple, automated web app deployment and hosting with{" "}
               <a
@@ -150,6 +176,7 @@ export default function Body() {
               </a>{" "}
               and Git repository integration.
             </ListItem>
+
             <ListItem ml="30px">
               Frontend design principles and theming with the{" "}
               <a
@@ -187,12 +214,18 @@ export default function Body() {
             <ListItem>
               As a template, this package is designed to provide a solid first
               step for new developers on Ronin, but do not hesitate to
-              update/modify any part to suit your needs!
+              update/modify/remove any part to suit your needs!
             </ListItem>
             <ListItem>
-              Newer developers can also follow alongisde THIS TUTORIAL to help
-              understand how to configure this package to run on your own live
-              staging environment.
+              Newer developers can also follow alongside{" "}
+              <a
+                href="https://weirdtheway.medium.com/getting-started-with-the-sign-in-with-ronin-starter-pack-68c45eff484a"
+                style={{ textDecoration: "underline" }}
+              >
+                this tutorial
+              </a>{" "}
+              to help understand how to configure this package to run on your
+              own live staging environment.
             </ListItem>
             <ListItem>
               For those interested in contributing to the SIWR Starter Pack, the

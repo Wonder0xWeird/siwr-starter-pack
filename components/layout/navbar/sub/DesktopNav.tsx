@@ -7,7 +7,7 @@ import { signOut, useSession } from "next-auth/react"
 
 import Banner from "./Banner"
 import WalletConnectProvider from "@walletconnect/web3-provider"
-import { sliceRoninAddress } from "../../../../lib/utils/wallet"
+import { sliceRoninAddress } from "../../../../lib/frontend/wallet"
 import { DESIGN_MAX_WIDTH } from "../../../../styles/theme"
 
 export default function DesktopNav({ currentPage, siwr }) {

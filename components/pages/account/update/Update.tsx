@@ -17,7 +17,7 @@ import { signIn } from "next-auth/react"
 
 import PasswordInput from "../../../common/PasswordInput"
 import Console from "../../../common/Console"
-import { sliceRoninAddress } from "../../../../lib/utils/wallet"
+import { sliceRoninAddress } from "../../../../lib/frontend/wallet"
 
 interface IUserInput {
   username: string

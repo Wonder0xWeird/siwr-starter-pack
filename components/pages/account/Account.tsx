@@ -11,7 +11,7 @@ import {
 import { signOut } from "next-auth/react"
 import WalletConnectProvider from "@walletconnect/web3-provider"
 import Console from "../../common/Console"
-import { sliceRoninAddress } from "../../../lib/utils/wallet"
+import { sliceRoninAddress } from "../../../lib/frontend/wallet"
 
 export default function Account(props) {
   const router = useRouter()

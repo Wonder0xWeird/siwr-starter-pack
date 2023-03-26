@@ -1,4 +1,4 @@
-import { forwardRef, Box, BoxProps, StackProps } from "@chakra-ui/react"
+import { forwardRef, Box, BoxProps } from "@chakra-ui/react"
 
 interface ConsoleProps extends BoxProps {
   header?: boolean

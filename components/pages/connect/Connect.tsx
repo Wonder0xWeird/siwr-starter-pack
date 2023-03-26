@@ -11,21 +11,23 @@ import {
   Input,
   Button,
 } from "@chakra-ui/react"
-import { signIn } from "next-auth/react"
+import { signIn, SignInOptions } from "next-auth/react"
 
 import PasswordInput from "../../common/PasswordInput"
 import { siwr } from "../../../lib/frontend/wallet"
 import Console from "../../common/Console"
 
-interface ICredentials {
+export interface ILoginRequestBody extends SignInOptions {
   username: string
   password: string
+  callbackUrl: string
 }
 
 export default function Connect() {
-  const [loginInput, setLoginInput] = React.useState<ICredentials>({
+  const [loginInput, setLoginInput] = React.useState<ILoginRequestBody>({
     username: "",
     password: "",
+    callbackUrl: "/account",
   })
   const [isLoggingIn, setIsLoggingIn] = React.useState<boolean>(false)
 
@@ -36,7 +38,7 @@ export default function Connect() {
       setIsLoggingIn(false)
       return
     } else {
-      const loginRequestBody = {
+      const loginRequestBody: ILoginRequestBody = {
         username: loginInput.username,
         password: loginInput.password,
         callbackUrl: "/account",
